@@ -44,6 +44,15 @@
     flashPassed: false,
     queueAttempts: 0,
     queuePassed: false,
+    kepAttempts: 0,
+    kepPassed: false,
+    slotAttempts: 0,
+    slotPassed: false,
+    paymentAttempts: 0,
+    paymentPassed: false,
+    printAttempts: 0,
+    printerRetries: 0,
+    printerPassed: false,
     chaosTimer: 0,
     chaosBusy: false,
     chaosIndex: 0,
@@ -332,14 +341,14 @@
   }, 1000);
 
   function setStep(nextStep) {
-    state.step = Math.max(1, Math.min(7, nextStep));
+    state.step = Math.max(1, Math.min(11, nextStep));
     $$(".form-step").forEach((panel) => panel.classList.toggle("active", Number(panel.dataset.step) === state.step));
     $$("[data-step-indicator]").forEach((indicator) => {
       const value = Number(indicator.dataset.stepIndicator);
       indicator.classList.toggle("active", value === state.step);
       indicator.classList.toggle("done", value < state.step);
     });
-    document.body.className = document.body.className.replace(/chaos-\d/g, "").trim();
+    document.body.className = document.body.className.replace(/chaos-\d+/g, "").trim();
     if (!state.calm) document.body.classList.add(`chaos-${state.step}`);
     $("#application").scrollIntoView({ behavior: state.calm ? "auto" : "smooth", block: "start" });
     beep(320 + state.step * 70);
@@ -869,6 +878,175 @@
     setStep(7);
   });
 
+  $("#verifyKep").addEventListener("click", () => {
+    const pin = $("#kepPin").value.trim();
+    if (pin !== "0000") {
+      showMessage("#step7Message", "Невалиден учебен ПИН. Валидният е изписан точно над полето, но порталът не носи отговорност.");
+      $("#kepStatus").textContent = "Грешка 0x0000: ПИН-ът не е достатъчно нулев.";
+      beep(170, 0.16);
+      return;
+    }
+    if (state.kepPassed) {
+      toast("Сертификатът вече е проверен. Повторната проверка е в отделно заявление.");
+      return;
+    }
+    state.kepAttempts += 1;
+    state.tricks += 1;
+    if (state.kepAttempts === 1) {
+      $("#kepStatus").textContent = "Сертификатът е валиден, но часовникът на четеца е в 2010 г.";
+      showMessage("#step7Message", "Проверката неуспешна: подписът е прекалено електронен. Натиснете същия бутон пак.");
+      return;
+    }
+    if (state.kepAttempts === 2) {
+      $("#kepStatus").textContent = "Драйверът откри КЕП, но КЕП не откри драйвера.";
+      showMessage("#step7Message", "Проверката пак е неуспешна. Извадете мислено устройството и опитайте за трети път.");
+      return;
+    }
+    state.kepPassed = true;
+    $("#kepStatus").textContent = "Сертификат: валиден до вчера, приет днес по изключение.";
+    $("#verifyKep").textContent = "КЕПЪТ Е ПРИБЛИЗИТЕЛНО ВАЛИДЕН";
+    $("#step7Next").disabled = false;
+    showMessage("#step7Message", "Квалифицираният подпис е неквалифицирано приет.", "success");
+  });
+
+  $("#step7Next").addEventListener("click", () => {
+    if (!state.kepPassed) {
+      showMessage("#step7Message", "Нужно е да проверите КЕП поне три пъти с ПИН 0000.");
+      return;
+    }
+    setStep(8);
+  });
+
+  $("#reserveSlot").addEventListener("click", () => {
+    if (!$("#serviceSlot").value) {
+      showMessage("#step8Message", "Изберете несвободен час, за да проверим дали случайно е свободен.");
+      return;
+    }
+    if (state.slotPassed) {
+      toast("Вече имате час. Часът няма минути, които да върнем.");
+      return;
+    }
+    state.slotAttempts += 1;
+    state.tricks += 1;
+    if (state.slotAttempts === 1) {
+      $("#slotStatus").textContent = "Часът беше зает от Вас, но на друго гише.";
+      showMessage("#step8Message", "Резервацията изтече, докато я резервирахте. Потвърдете КЕП отново и се върнете.");
+      toast("Системата Ви върна една стъпка по административна необходимост.");
+      window.setTimeout(() => setStep(7), 900);
+      return;
+    }
+    state.slotPassed = true;
+    $("#slotStatus").textContent = "Запазено: втората сряда след първия четвъртък, 10:03 ч.";
+    $("#reserveSlot").textContent = "ЧАСЪТ Е НЕСВОБОДНО ЗАПАЗЕН";
+    $("#step8Next").disabled = false;
+    showMessage("#step8Message", "Получихте 60-секунден приемен час с 14-месечно предизвестие.", "success");
+  });
+
+  $("#step8Next").addEventListener("click", () => {
+    if (!state.slotPassed) {
+      showMessage("#step8Message", "Не сте запазили час за електронното гише.");
+      return;
+    }
+    setStep(9);
+  });
+
+  $("#fakePay").addEventListener("click", () => {
+    if (state.paymentPassed) {
+      toast("Таксата вече е платена. Връщане на административни точки не се допуска.");
+      return;
+    }
+    state.paymentAttempts += 1;
+    state.tricks += 1;
+    if (state.paymentAttempts === 1) {
+      $("#paymentStatus").textContent = `Опити за плащане: ${state.paymentAttempts}. Левове вече не се приемат.`;
+      showMessage("#step9Message", "Плащането е отказано: системата очаква евро, но показва левове.");
+      return;
+    }
+    if (state.paymentAttempts === 2) {
+      $("#paymentStatus").textContent = `Опити за плащане: ${state.paymentAttempts}. Евро още не се приемат.`;
+      showMessage("#step9Message", "Плащането е отказано: системата очаква левове, но вече поиска евро.");
+      return;
+    }
+    state.paymentPassed = true;
+    $("#paymentStatus").textContent = `Опити за плащане: ${state.paymentAttempts}. Платено с 8471 административни точки.`;
+    $("#fakePay").textContent = "ПЛАТЕНО БЕЗ ПАРИ";
+    $("#step9Next").disabled = false;
+    showMessage("#step9Message", "Безплатната такса е платена успешно без платежно средство.", "success");
+  });
+
+  $("#step9Next").addEventListener("click", () => {
+    if (!state.paymentPassed) {
+      showMessage("#step9Message", "Безплатната услуга не може да продължи преди платена такса.");
+      return;
+    }
+    setStep(10);
+  });
+
+  $("#printApplication").addEventListener("click", () => {
+    if (state.printerPassed) {
+      toast("Документът вече е отпечатан. Четвъртото копие се заявява на място.");
+      return;
+    }
+    state.printAttempts += 1;
+    state.tricks += 1;
+    if (state.printAttempts === 1) {
+      $("#printerModalTitle").textContent = "Add Printer Wizard (Not Responding)";
+      $("#printerModalText").textContent = "Windows cannot find the printer that the portal insists is connected.";
+      $("#printerStatus").textContent = "Състояние: търси принтер на гише 7...";
+      openModal("#printerModal");
+      showMessage("#step10Message", "Печатът не започна, защото принтерът не съществува. Убедете Windows в обратното.");
+      return;
+    }
+    if (state.printAttempts === 2) {
+      $("#printerModalTitle").textContent = "HP DeskJet 404 — Paper Jam";
+      $("#printerModalText").textContent = "Paper jam in tray 0. The selected printer has no tray 0 and no paper.";
+      $("#printerStatus").textContent = "Състояние: виртуална хартия е заседнала физически.";
+      openModal("#printerModal");
+      showMessage("#step10Message", "Открито е засядане без хартия. Затворете съветника и печатайте пак.");
+      return;
+    }
+    state.printerPassed = true;
+    $("#printerStatus").textContent = "Състояние: 3 от 2 копия са отпечатани в PDF принтер без PDF.";
+    $("#printApplication").textContent = "РАЗПЕЧАТАНО ЕЛЕКТРОННО";
+    $("#step10Next").disabled = false;
+    showMessage("#step10Message", "Печатът завърши. Мокрият електронен печат е достатъчно сух.", "success");
+  });
+
+  $("#printerRetry").addEventListener("click", () => {
+    state.printerRetries += 1;
+    state.tricks += 1;
+    if (state.printerRetries === 1) {
+      $("#printerModalTitle").textContent = "Searching for printer... (Not Responding)";
+      $("#printerModalText").textContent = "The print spooler is waiting for the printer to invent itself. Натиснете пак.";
+      $("#printerRetry").textContent = "Try more again";
+      return;
+    }
+    closeModal("#printerModal");
+    $("#printerRetry").textContent = "Try again";
+    showMessage("#step10Message", "Повторното търсене намери същия липсващ принтер. Стартирайте печата отново.");
+  });
+
+  $("#addPrinter").addEventListener("click", () => {
+    state.tricks += 1;
+    closeModal("#printerModal");
+    $("#printerStatus").textContent = "Добавен: HP DeskJet 404 (въображаем, офлайн, по подразбиране).";
+    toast("Въображаемият принтер беше добавен реално неуспешно.");
+  });
+
+  $("#printerModalClose").addEventListener("click", () => {
+    state.tricks += 1;
+    $("#printerModalClose").textContent = "?";
+    $("#printerModalText").textContent = "The close button is waiting for the printer. Изберете някой от другите неправилни бутони.";
+  });
+
+  $("#step10Next").addEventListener("click", () => {
+    if (!state.printerPassed) {
+      showMessage("#step10Message", "Не може да сканирате документ, който още не е разпечатан виртуално.");
+      return;
+    }
+    setStep(11);
+  });
+
   function runFinalProgress(secondPass = false) {
     state.finalizing = true;
     openModal("#progressModal");
@@ -908,7 +1086,7 @@
 
   $("#submitApplication").addEventListener("click", () => {
     if (!$("#finalConsent").checked) {
-      showMessage("#step7Message", "Трябва да потвърдите непотвърдените данни, преди да ги потвърдите.");
+      showMessage("#step11Message", "Трябва да потвърдите непотвърдените данни, преди да ги потвърдите.");
       return;
     }
     if (!state.finalizing) runFinalProgress(state.calm);

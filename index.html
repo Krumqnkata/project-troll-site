@@ -121,7 +121,11 @@
             <li data-step-indicator="4"><b>4</b><span>Проверка</span></li>
             <li data-step-indicator="5"><b>5</b><span>Flash</span></li>
             <li data-step-indicator="6"><b>6</b><span>Опашка</span></li>
-            <li data-step-indicator="7"><b>7</b><span>Приключване</span></li>
+            <li data-step-indicator="7"><b>7</b><span>КЕП</span></li>
+            <li data-step-indicator="8"><b>8</b><span>Час</span></li>
+            <li data-step-indicator="9"><b>9</b><span>Такса</span></li>
+            <li data-step-indicator="10"><b>10</b><span>Печат</span></li>
+            <li data-step-indicator="11"><b>11</b><span>Край</span></li>
           </ol>
 
           <form id="municipalForm" novalidate autocomplete="off">
@@ -287,7 +291,98 @@
             </section>
 
             <section class="form-step" data-step="7">
-              <h3><span>7.</span> Преглед, потвърждение и административно съмнение</h3>
+              <h3><span>7.</span> Квалифициран електронен подпис на неподписаното</h3>
+              <p>Поставете виртуалния КЕП в несъществуващия четец и въведете учебния ПИН. Порталът ще го отхвърли служебно два пъти.</p>
+              <div class="kep-panel">
+                <div class="kep-token" aria-hidden="true"><span>USB</span><b>КЕП</b><small>driver 2010</small></div>
+                <div class="kep-controls">
+                  <label for="kepPin">Демонстрационен ПИН (подсказка: <b>0000</b>)</label>
+                  <div class="kep-pin-row">
+                    <input id="kepPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+                    <button id="verifyKep" class="official-button" type="button">ПРОВЕРИ СЕРТИФИКАТА</button>
+                  </div>
+                  <p id="kepStatus" class="terminal-status">Четец: не е намерен, но е задължителен.</p>
+                </div>
+              </div>
+              <div id="step7Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; ИЗВАДИ КЕП-А НЕПРАВИЛНО</button>
+                <button id="step7Next" class="primary-button" type="button" disabled>ПОДПИШИ И ПРОДЪЛЖИ</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="8">
+              <h3><span>8.</span> Записване на час за електронно посещение на гише</h3>
+              <p>Дори електронните заявления трябва да посетят гише. Изберете удобен за администрацията неудобен час.</p>
+              <div class="slot-panel">
+                <div class="slot-calendar">
+                  <b>ОКТОМВРИ 2010</b>
+                  <span>Пн Вт Ср Чт Пт Сб Нд</span>
+                  <strong>— — — — 1 2 3<br>4 5 6 7 8 9 10<br>11 12 <mark>13</mark> 14 15 16 17</strong>
+                </div>
+                <div class="slot-controls">
+                  <label for="serviceSlot">Свободни часове (обновяват се със закъснение)</label>
+                  <select id="serviceSlot">
+                    <option value="">-- изберете несвободен час --</option>
+                    <option value="wednesday">Втора сряда, 10:03–10:04 ч.</option>
+                    <option value="february">31 февруари, 13:61 ч.</option>
+                    <option value="lunch">По време на обедната почивка, 09:30–16:30 ч.</option>
+                  </select>
+                  <button id="reserveSlot" class="official-button" type="button">ЗАПАЗИ ЧАСА ПРЕДВАРИТЕЛНО</button>
+                  <p id="slotStatus" class="terminal-status">Наличност: свободните часове са временно заети.</p>
+                </div>
+              </div>
+              <div id="step8Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; ВЪРНИ КАЛЕНДАРА</button>
+                <button id="step8Next" class="primary-button" type="button" disabled>ЯВИ СЕ ЕЛЕКТРОННО</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="9">
+              <h3><span>9.</span> Плащане на безплатната административна услуга</h3>
+              <p>Не се въвеждат банкови данни. Това е напълно измислен терминал, който приема само административно търпение.</p>
+              <div class="payment-terminal">
+                <div class="payment-screen">
+                  <span>ДЪЛЖИМА СУМА</span>
+                  <strong>0,01 лв.</strong>
+                  <small>+ 14,99 лв. такса за обработка на таксата</small>
+                </div>
+                <div class="payment-led" aria-hidden="true">● ВРЪЗКА С БОРИКА: ПРИБЛИЗИТЕЛНА</div>
+                <button id="fakePay" class="official-button pay-button" type="button">ПЛАТИ БЕЗ КАРТА</button>
+                <p id="paymentStatus" class="terminal-status">Опити за плащане: <b id="paymentAttemptCount">0</b> от неограничени.</p>
+              </div>
+              <div id="step9Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; ВЪРНИ РЕСТОТО</button>
+                <button id="step9Next" class="primary-button" type="button" disabled>ПРОДЪЛЖИ КЪМ ПЕЧАТ</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="10">
+              <h3><span>10.</span> Задължително разпечатване на електронното заявление</h3>
+              <p>За да остане документът електронен, той трябва да бъде разпечатан, виртуално подпечатан и върнат в браузъра.</p>
+              <div class="printer-panel">
+                <div class="paper-preview" aria-hidden="true">
+                  <b>ОБРАЗЕЦ 404-Б</b>
+                  <span></span><span></span><span></span><span></span>
+                  <strong>МЯСТО ЗА МОКЪР ЕЛЕКТРОНЕН ПЕЧАТ</strong>
+                </div>
+                <div class="printer-controls">
+                  <p><b>Избран принтер:</b> HP DeskJet 404 (офлайн от 2010 г.)</p>
+                  <button id="printApplication" class="official-button" type="button">РАЗПЕЧАТАЙ 3 ЕЛЕКТРОННИ КОПИЯ</button>
+                  <p id="printerStatus" class="terminal-status">Състояние: хартия има, принтер няма.</p>
+                </div>
+              </div>
+              <div id="step10Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; ОТМЕНИ ПЕЧАТА</button>
+                <button id="step10Next" class="primary-button" type="button" disabled>СКАНИРАЙ РАЗПЕЧАТКАТА</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="11">
+              <h3><span>11.</span> Преглед, потвърждение и административно съмнение</h3>
               <table class="summary-table">
                 <tbody>
                   <tr><th>Услуга</th><td>Удостоверение за липса на удостоверение</td></tr>
@@ -299,7 +394,7 @@
                 </tbody>
               </table>
               <label class="final-consent"><input id="finalConsent" type="checkbox"> Потвърждавам, че непотвърдените данни по-горе са достатъчно приблизителни.</label>
-              <div id="step7Message" class="inline-message" role="status"></div>
+              <div id="step11Message" class="inline-message" role="status"></div>
               <div class="form-actions">
                 <button class="secondary-button back-step" type="button">ОТКАЖИ, НО НЕ СЪВСЕМ</button>
                 <button id="submitApplication" class="submit-button" type="button">ПОДПИШИ И ИЗПРАТИ</button>
@@ -479,6 +574,20 @@
       <div class="dialog-actions">
         <button id="waitForFlash" type="button">Wait for the program to respond</button>
         <button id="endFlash" type="button">Close the program</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="printerModal" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="printerModalTitle">
+    <div class="system-dialog error-dialog not-responding-dialog">
+      <div class="dialog-title"><span id="printerModalTitle">Add Printer Wizard (Not Responding)</span><button id="printerModalClose" class="fake-close" type="button" aria-label="Затвори">×</button></div>
+      <div class="dialog-body">
+        <div class="dialog-icon error-icon">!</div>
+        <div><b>Printer not found.</b><p id="printerModalText">Windows cannot find the printer that the portal insists is connected.</p></div>
+      </div>
+      <div class="dialog-actions">
+        <button id="printerRetry" type="button">Try again</button>
+        <button id="addPrinter" type="button">Add imaginary printer</button>
       </div>
     </div>
   </div>
