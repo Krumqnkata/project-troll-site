@@ -95,78 +95,40 @@
     oscillator.stop(state.audioContext.currentTime + duration);
   }
 
-  function loadYouTubeApi() {
-    if (window.YT && window.YT.Player) {
-      createYouTubePlayer();
-      return;
-    }
-    if ($("#youtubeIframeApi")) return;
-    window.onYouTubeIframeAPIReady = createYouTubePlayer;
-    const apiScript = document.createElement("script");
-    apiScript.id = "youtubeIframeApi";
-    apiScript.src = "https://www.youtube.com/iframe_api";
-    apiScript.async = true;
-    document.head.append(apiScript);
-  }
-
-  function createYouTubePlayer() {
-    if (state.videoPlayer || !window.YT || !window.YT.Player) return;
-    state.videoPlayer = new window.YT.Player("youtubePlayer", {
-      videoId: "dQw4w9WgXcQ",
-      playerVars: {
-        autoplay: 1,
-        controls: 0,
-        disablekb: 1,
-        fs: 0,
-        loop: 1,
-        modestbranding: 1,
-        playlist: "dQw4w9WgXcQ",
-        playsinline: 1,
-        rel: 0
-      },
-      events: {
-        onReady(event) {
-          state.videoReady = true;
-          event.target.setVolume(state.videoVolume);
-          $("#videoStatus").textContent = "Културната програма е задължителна.";
-          playTrollVideo();
-        },
-        onStateChange(event) {
-          if (event.data === window.YT.PlayerState.ENDED && !state.calm) {
-            event.target.seekTo(0, true);
-            event.target.playVideo();
-          }
-          if (event.data === window.YT.PlayerState.PAUSED && state.videoActivated && !state.calm) {
-            window.setTimeout(() => playTrollVideo(), 450);
-          }
-        },
-        onError() {
-          $("#videoStatus").textContent = "Грешка при културата. Кликнете пак.";
-          toast("YouTube отказа административното видео. Опитваме пак при следващия клик.");
-        }
-      }
+  function loadLocalVideo() {
+    if (state.videoPlayer) return;
+    const player = $("#localVideoPlayer");
+    state.videoPlayer = player;
+    state.videoReady = true;
+    player.volume = state.videoVolume / 100;
+    player.addEventListener("pause", () => {
+      if (state.videoActivated && !state.calm) window.setTimeout(() => playTrollVideo(), 450);
     });
+    player.addEventListener("error", () => {
+      $("#videoStatus").textContent = "Грешка при културата. Кликнете пак.";
+      toast("Локалното административно видео отказа. Опитваме пак при следващия клик.");
+    });
+    $("#videoStatus").textContent = "Културната програма е задължителна.";
   }
 
   function playTrollVideo() {
     if (!state.videoReady || !state.videoPlayer || state.calm) return;
-    try {
-      state.videoPlayer.unMute();
-      state.videoPlayer.setVolume(state.videoVolume);
-      state.videoPlayer.playVideo();
-    } catch (_error) {
+    state.videoPlayer.muted = false;
+    state.videoPlayer.volume = state.videoVolume / 100;
+    const playRequest = state.videoPlayer.play();
+    if (playRequest && typeof playRequest.catch === "function") {
+      playRequest.catch(() => {
+        $("#videoStatus").textContent = "Нужен е още един административен клик.";
+      });
+    } else {
       $("#videoStatus").textContent = "Нужен е още един административен клик.";
     }
   }
 
   function pauseTrollVideo() {
     if (!state.videoReady || !state.videoPlayer) return;
-    try {
-      state.videoPlayer.pauseVideo();
-      state.videoPlayer.mute();
-    } catch (_error) {
-      // The external player may still be loading; hiding it is enough until ready.
-    }
+    state.videoPlayer.pause();
+    state.videoPlayer.muted = true;
   }
 
   function activateTrollVideo() {
@@ -184,7 +146,7 @@
       state.teacherX = Math.max(8, window.innerWidth - teacher.offsetWidth - 28);
       state.teacherY = Math.max(38, window.innerHeight - teacher.offsetHeight - 28);
       teacher.style.transform = `translate(${state.teacherX}px, ${state.teacherY}px)`;
-      loadYouTubeApi();
+      loadLocalVideo();
       startVideoMotion();
       startFakeAds();
       scheduleChaos();
@@ -421,7 +383,7 @@
     }
     state.soundLevel = Math.min(0.18, state.soundLevel + 0.03);
     state.videoVolume = Math.min(100, state.videoVolume + 8);
-    if (state.videoReady) state.videoPlayer.setVolume(state.videoVolume);
+    if (state.videoReady) state.videoPlayer.volume = state.videoVolume / 100;
     state.tricks += 1;
     $("#soundButton").textContent = `♫ Намален на ${state.videoVolume}%`;
     beep(760, 0.1);

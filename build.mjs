@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname);
@@ -22,10 +22,14 @@ const files = {
 };
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const file = files[url.pathname];
     if (!file) {
+      if (env && env.ASSETS && url.pathname.startsWith("/assets/")) {
+        const asset = await env.ASSETS.fetch(request);
+        if (asset.status !== 404) return asset;
+      }
       return new Response("Страницата не е намерена. Вероятно е на гише 7.", {
         status: 404,
         headers: { "content-type": "text/plain; charset=utf-8" }
@@ -45,5 +49,7 @@ export default {
 
 await rm(resolve(root, "dist"), { recursive: true, force: true });
 await mkdir(outputDirectory, { recursive: true });
+await mkdir(resolve(root, "dist/client/assets"), { recursive: true });
 await writeFile(resolve(outputDirectory, "index.js"), worker, "utf8");
+await copyFile(resolve(root, "assets/municipal-video.mp4"), resolve(root, "dist/client/assets/municipal-video.mp4"));
 console.log("Built plain HTML/CSS/JS site for deployment.");
