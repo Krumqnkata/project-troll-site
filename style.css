@@ -351,6 +351,8 @@ a { color: #064f99; }
 .teacher-status { min-height: 19px; padding: 3px 5px; overflow: hidden; color: #28343d; background: #ece9d8; white-space: nowrap; text-overflow: ellipsis; font-size: 8px; }
 .teacher-face.teacher-squash { transform: scale(.08) rotate(-18deg) !important; opacity: .35; }
 .teacher-face.teacher-angry .teacher-face-titlebar { background: linear-gradient(90deg,#740d08,#e97319); }
+.funded-badge { position: absolute; left: 4px; right: 4px; top: 76px; z-index: 5; padding: 6px 4px; border: 3px solid #fff000; color: #fff; background: #c60000; box-shadow: 0 0 0 2px #8a0000, 0 0 18px #ff2600; text-align: center; text-shadow: 1px 1px #650000; font: 900 10px/1.12 Arial, sans-serif; letter-spacing: .25px; pointer-events: none; animation: funded-blink 1.05s steps(2,end) infinite; }
+@keyframes funded-blink { 50% { color: #9a0000; background: #fff000; border-color: #d00000; box-shadow: 0 0 0 3px #fff, 0 0 24px #fff000; text-shadow: none; transform: scale(1.06) rotate(-1deg); } }
 
 .cookie-panel { position: fixed; left: 50%; bottom: 10px; z-index: 875; width: min(620px, calc(100% - 24px)); transform: translateX(-50%); border: 4px ridge #b5b5b5; padding: 10px; color: #231f12; background: #fff7b8; box-shadow: 0 7px 25px #0008; }
 .cookie-title { margin: -10px -10px 8px; padding: 5px 8px; color: #fff; background: linear-gradient(#547ca0,#244c70); font-weight: bold; }
@@ -439,12 +441,14 @@ body.victory-mode .page-shell { filter: grayscale(.25); opacity: .28; pointer-ev
   .teacher-face { width: 166px; }
   .teacher-photo-frame { width: 160px; height: 121px; }
   .teacher-face-titlebar { font-size: 7px; }
+  .funded-badge { left: 2px; right: 2px; top: 61px; padding: 4px 2px; font-size: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   .troll-video { left: auto !important; right: 8px !important; top: auto !important; bottom: 54px !important; transform: none !important; }
   .teacher-face { left: 8px !important; right: auto !important; top: auto !important; bottom: 54px !important; transform: none !important; }
+  .funded-badge { animation: none !important; }
 }
 
 @media print {
