@@ -51,13 +51,13 @@
       </div>
 
       <nav class="main-nav" aria-label="Основна навигация">
-        <button type="button" data-wrong-nav="footer">НАЧАЛО</button>
-        <button type="button" data-wrong-nav="news">НОВИНИ</button>
-        <button type="button" data-wrong-nav="forward">НАЗАД</button>
-        <button type="button" data-wrong-nav="services">Е-УСЛУГИ</button>
-        <button type="button" data-wrong-nav="services">ЕЛЕКТРОННИ УСЛУГИ</button>
-        <button type="button" data-wrong-nav="other">ДРУГИ УСЛУГИ</button>
-        <button type="button" data-wrong-nav="contacts">КОНТАКТИ</button>
+        <button type="button" data-section="home">НАЧАЛО</button>
+        <button type="button" data-section="aboutSection">ЗА ОБЩИНАТА</button>
+        <button type="button" data-section="newsSection">НОВИНИ</button>
+        <button type="button" data-section="application">Е-УСЛУГИ</button>
+        <button type="button" data-section="servicesSection">УСЛУГИ</button>
+        <button type="button" data-section="contactsSection">КОНТАКТИ</button>
+        <button type="button" data-section="siteMapSection">КАРТА НА САЙТА</button>
       </nav>
     </header>
 
@@ -89,6 +89,12 @@
           <p>Best viewed with</p>
           <strong>Internet Explorer 8</strong>
           <small>800×600 / 16-bit color</small>
+        </section>
+
+        <section class="retro-ads" aria-label="Полезни връзки">
+          <button type="button" data-popup="winner"><b>ПОЗДРАВЛЕНИЯ!</b><span>Вие сте посетителят, който чакахме!</span></button>
+          <button type="button" data-popup="reader"><b>GET PDF READER 6</b><span>само 84 MB</span></button>
+          <button type="button" data-popup="toolbar"><b>БЕЗПЛАТНА ЛЕНТА</b><span>за Вашия браузър</span></button>
         </section>
       </aside>
 
@@ -277,6 +283,60 @@
         <div class="legal-footnote">
           <b>* Правно основание:</b> чл. 404, ал. 0 от Наредбата за нещата, които някога са били необходими. Версия на формуляра 2.0.10 beta.
         </div>
+
+        <div class="portal-sections">
+          <section id="aboutSection" class="portal-panel">
+            <h2>За община Долно Нанагорнище</h2>
+            <div class="portal-columns">
+              <div>
+                <h3>Добре дошли от кмета</h3>
+                <p>Нашата община се намира стратегически между Горно Нанагорнище и отбивката за никъде. Работим неуморно за улесняване на всяка процедура чрез добавяне на още една процедура.</p>
+              </div>
+              <dl class="fact-list">
+                <div><dt>Население</dt><dd>8 471 посетители</dd></div>
+                <div><dt>Надморска височина</dt><dd>според гишето</dd></div>
+                <div><dt>Кмет</dt><dd>вр.и.д. временно постоянен</dd></div>
+              </dl>
+            </div>
+          </section>
+
+          <section id="newsSection" class="portal-panel">
+            <h2>Новини и съобщения</h2>
+            <div class="portal-news-grid">
+              <article><time>12.10.2010</time><h3>Открихме новото старо гише № 7</h3><p>Гишето ще приема граждани след приключване на тържествената почивка.</p><a href="#newsSection">Прочети по-малко »</a></article>
+              <article><time>31.09.2010</time><h3>Порталът вече е електронен</h3><p>Документите могат да се попълват онлайн и да се донесат разпечатани в три екземпляра.</p><a href="#newsSection">Архивирай новината »</a></article>
+              <article><time>Преди малко</time><h3>Профилактика на профилактиката</h3><p>Услугите са достъпни, освен когато се използват.</p><a href="#newsSection">Повече неизвестности »</a></article>
+            </div>
+          </section>
+
+          <section id="servicesSection" class="portal-panel">
+            <h2>Каталог на административните услуги</h2>
+            <div class="service-directory">
+              <button type="button" data-popup="birth">Удостоверение за раждане преди раждането <span>Срок: 9 месеца</span></button>
+              <button type="button" data-popup="address">Промяна на настоящ бъдещ адрес <span>Такса: изчислява се</span></button>
+              <button type="button" data-popup="tree">Разрешение за премахване на несъществуващо дърво <span>Нужно дърво</span></button>
+              <button type="button" data-popup="stamp">Заверка на незаверената заверка <span>Гише 7½</span></button>
+            </div>
+          </section>
+
+          <section id="contactsSection" class="portal-panel">
+            <h2>Контакти и приемно време</h2>
+            <div class="contact-grid">
+              <div><b>Център за административно объркване</b><p>пл. „Безкрайна Опашка“ № 1, ет. -1<br>Телефон: 0700 00 404<br>Факс: зает</p></div>
+              <div><b>Приемно време</b><p>Всяка втора сряда: 10:00–10:07<br>Обедна почивка: 09:30–16:30<br>Събота и неделя: още по-затворено</p></div>
+              <button type="button" data-popup="email">ИЗПРАТИ НЕПОЛУЧЕН E-MAIL</button>
+            </div>
+          </section>
+
+          <section id="siteMapSection" class="portal-panel site-map-panel">
+            <h2>Карта на сайта</h2>
+            <ul>
+              <li>Начало <ul><li>Край</li><li>Почти начало</li></ul></li>
+              <li>Електронни услуги <ul><li>Неелектронни електронни услуги</li><li>Заявление за заявление</li></ul></li>
+              <li>Контакти <ul><li>Недостъпни телефони</li><li>Зает факс</li></ul></li>
+            </ul>
+          </section>
+        </div>
       </main>
 
       <aside class="right-sidebar" aria-label="Информация и помощ">
@@ -293,6 +353,8 @@
           <article><time>12.10.2010</time><a href="#news">Порталът е временно постоянен</a></article>
           <article><time>31.09.2010</time><a href="#news">Ново работно време: 10:00–10:07</a></article>
           <article><time>Вчера</time><a href="#news">Профилактика на профилактиката</a></article>
+          <article><time>Утре</time><a href="#news">Минало заседание ще се проведе предварително</a></article>
+          <article><time>Без дата</time><a href="#news">Изгубено е съобщението за изгубени вещи</a></article>
         </section>
 
         <section class="visitor-box">
@@ -325,7 +387,7 @@
         Работно време: всяка втора сряда от 10:00 до 10:07
       </div>
       <div class="footer-links"><a href="#application">Карта на сайта без карта</a> | <a href="#footer">Достъпност</a> | <a href="#footer">Декларация за декларацията</a></div>
-      <div class="copyright">© 2007–2010 Община Долно Нанагорнище<br>Всички права запазени, включително грешните.</div>
+      <div class="copyright">© 2007–2010 Община Долно Нанагорнище<br>Всички права запазени, включително грешните.<br><b>Изработили:</b> Крум Крумов, Валерия Господинова и Стефан Георгиев</div>
     </footer>
   </div>
 
@@ -378,6 +440,37 @@
       <button id="closeReward" type="button">Върни нормалния свят</button>
     </div>
   </div>
+
+  <div id="chaosDialog" class="modal-layer chaos-dialog-layer hidden" role="dialog" aria-modal="true" aria-labelledby="chaosDialogTitle">
+    <div class="system-dialog error-dialog">
+      <div class="dialog-title"><span id="chaosDialogTitle">Microsoft Internet Explorer</span><button id="chaosDialogClose" class="fake-close" type="button" aria-label="Затвори">×</button></div>
+      <div class="dialog-body">
+        <div class="dialog-icon error-icon">×</div>
+        <div><b id="chaosDialogHeading">Възникна неизвестна известна грешка.</b><p id="chaosDialogText">Страницата отговори, но отговорът не беше съгласен.</p></div>
+      </div>
+      <div class="dialog-actions"><button id="chaosDialogOk" type="button">OK, но не съвсем</button></div>
+    </div>
+  </div>
+
+  <aside id="cookiePanel" class="cookie-panel hidden" aria-label="Настройки на бисквитките">
+    <div class="cookie-title">🍪 Център за задължителен избор</div>
+    <p>Използваме 8471 необходими, ненужни и административни бисквитки, за да запомним, че не искате да бъдете запомнен.</p>
+    <div>
+      <button id="acceptCookies" type="button">Приеми неприетите</button>
+      <button id="rejectCookies" type="button">Откажи приемането</button>
+    </div>
+  </aside>
+
+  <div id="chaosBanner" class="chaos-banner hidden" role="status">⚠ Няма интернет. Тази страница е заредена от интернет.</div>
+
+  <aside id="trollVideo" class="troll-video hidden" aria-label="Задължително общинско видео">
+    <div class="troll-video-titlebar">
+      <span>▶ ЗАДЪЛЖИТЕЛНО ОБЩИНСКО ВИДЕО</span>
+      <button id="fakeVideoClose" type="button" aria-label="Затвори видеото">×</button>
+    </div>
+    <div id="youtubePlayer" class="youtube-player"></div>
+    <div id="videoStatus" class="video-status">Зареждане на културната програма...</div>
+  </aside>
 
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
   <script src="script.js"></script>

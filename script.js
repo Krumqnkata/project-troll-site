@@ -19,10 +19,29 @@
     calm: false,
     audioContext: null,
     soundLevel: 0.08,
-    finalizing: false
+    finalizing: false,
+    videoPlayer: null,
+    videoReady: false,
+    videoActivated: false,
+    videoX: 18,
+    videoY: 62,
+    videoVx: 112,
+    videoVy: 86,
+    videoFrame: 0,
+    videoLastFrame: 0,
+    videoLastDirectionChange: 0,
+    videoVolume: 78,
+    chaosTimer: 0,
+    chaosBusy: false,
+    chaosIndex: 0,
+    navClicks: 0,
+    pointerX: window.innerWidth / 2,
+    pointerY: window.innerHeight / 2
   };
 
   document.addEventListener("click", () => { state.clicks += 1; });
+  document.addEventListener("pointerdown", () => activateTrollVideo(), { capture: true });
+  document.addEventListener("keydown", () => activateTrollVideo(), { once: true });
 
   function toast(message, duration = 3600) {
     const node = document.createElement("div");
@@ -66,6 +85,148 @@
     oscillator.start();
     gain.gain.exponentialRampToValueAtTime(0.001, state.audioContext.currentTime + duration);
     oscillator.stop(state.audioContext.currentTime + duration);
+  }
+
+  function loadYouTubeApi() {
+    if (window.YT && window.YT.Player) {
+      createYouTubePlayer();
+      return;
+    }
+    if ($("#youtubeIframeApi")) return;
+    window.onYouTubeIframeAPIReady = createYouTubePlayer;
+    const apiScript = document.createElement("script");
+    apiScript.id = "youtubeIframeApi";
+    apiScript.src = "https://www.youtube.com/iframe_api";
+    apiScript.async = true;
+    document.head.append(apiScript);
+  }
+
+  function createYouTubePlayer() {
+    if (state.videoPlayer || !window.YT || !window.YT.Player) return;
+    state.videoPlayer = new window.YT.Player("youtubePlayer", {
+      videoId: "Lb3bma3d92k",
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        loop: 1,
+        modestbranding: 1,
+        playlist: "Lb3bma3d92k",
+        playsinline: 1,
+        rel: 0
+      },
+      events: {
+        onReady(event) {
+          state.videoReady = true;
+          event.target.setVolume(state.videoVolume);
+          $("#videoStatus").textContent = "Културната програма е задължителна.";
+          playTrollVideo();
+        },
+        onStateChange(event) {
+          if (event.data === window.YT.PlayerState.ENDED && !state.calm) {
+            event.target.seekTo(0, true);
+            event.target.playVideo();
+          }
+          if (event.data === window.YT.PlayerState.PAUSED && state.videoActivated && !state.calm) {
+            window.setTimeout(() => playTrollVideo(), 450);
+          }
+        },
+        onError() {
+          $("#videoStatus").textContent = "Грешка при културата. Кликнете пак.";
+          toast("YouTube отказа административното видео. Опитваме пак при следващия клик.");
+        }
+      }
+    });
+  }
+
+  function playTrollVideo() {
+    if (!state.videoReady || !state.videoPlayer || state.calm) return;
+    try {
+      state.videoPlayer.unMute();
+      state.videoPlayer.setVolume(state.videoVolume);
+      state.videoPlayer.playVideo();
+    } catch (_error) {
+      $("#videoStatus").textContent = "Нужен е още един административен клик.";
+    }
+  }
+
+  function pauseTrollVideo() {
+    if (!state.videoReady || !state.videoPlayer) return;
+    try {
+      state.videoPlayer.pauseVideo();
+      state.videoPlayer.mute();
+    } catch (_error) {
+      // The external player may still be loading; hiding it is enough until ready.
+    }
+  }
+
+  function activateTrollVideo() {
+    if (state.calm) return;
+    const video = $("#trollVideo");
+    video.classList.remove("hidden");
+    if (!state.videoActivated) {
+      state.videoActivated = true;
+      video.style.left = "0";
+      video.style.top = "0";
+      loadYouTubeApi();
+      startVideoMotion();
+      scheduleChaos();
+      toast("Стартирана е задължителната културна програма.");
+    }
+    playTrollVideo();
+  }
+
+  function startVideoMotion() {
+    if (state.videoFrame) return;
+    state.videoLastFrame = performance.now();
+    state.videoLastDirectionChange = state.videoLastFrame;
+    state.videoFrame = requestAnimationFrame(moveVideoFrame);
+  }
+
+  function moveVideoFrame(now) {
+    const video = $("#trollVideo");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const elapsed = Math.min((now - state.videoLastFrame) / 1000, 0.04);
+    state.videoLastFrame = now;
+
+    if (!state.calm && state.videoActivated && !reducedMotion) {
+      const maxX = Math.max(8, window.innerWidth - video.offsetWidth - 8);
+      const maxY = Math.max(38, window.innerHeight - video.offsetHeight - 8);
+      state.videoX += state.videoVx * elapsed;
+      state.videoY += state.videoVy * elapsed;
+
+      if (state.videoX <= 8 || state.videoX >= maxX) {
+        state.videoX = Math.max(8, Math.min(maxX, state.videoX));
+        state.videoVx *= -1;
+        video.classList.toggle("video-angry");
+      }
+      if (state.videoY <= 38 || state.videoY >= maxY) {
+        state.videoY = Math.max(38, Math.min(maxY, state.videoY));
+        state.videoVy *= -1;
+        video.classList.toggle("video-angry");
+      }
+
+      if (now - state.videoLastDirectionChange > 7200) {
+        const speed = 92 + Math.random() * 75;
+        const angle = Math.random() * Math.PI * 2;
+        state.videoVx = Math.cos(angle) * speed;
+        state.videoVy = Math.sin(angle) * speed;
+        state.videoLastDirectionChange = now;
+        $("#videoStatus").textContent = Math.random() > 0.5 ? "Търсим най-неудобния ъгъл..." : "Не затваряйте. Ние също не можем.";
+      }
+      video.style.transform = `translate(${state.videoX}px, ${state.videoY}px)`;
+    }
+    state.videoFrame = requestAnimationFrame(moveVideoFrame);
+  }
+
+  function teleportVideo() {
+    const video = $("#trollVideo");
+    const maxX = Math.max(8, window.innerWidth - video.offsetWidth - 8);
+    const maxY = Math.max(38, window.innerHeight - video.offsetHeight - 8);
+    state.videoX = 8 + Math.random() * Math.max(1, maxX - 8);
+    state.videoY = 38 + Math.random() * Math.max(1, maxY - 38);
+    video.style.transform = `translate(${state.videoX}px, ${state.videoY}px)`;
   }
 
   function updateClock() {
@@ -136,6 +297,7 @@
   $("#contrastButton").addEventListener("click", () => document.body.classList.toggle("high-contrast"));
 
   $("#soundButton").addEventListener("click", async () => {
+    activateTrollVideo();
     if (!state.audioContext) {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) {
@@ -150,8 +312,10 @@
       return;
     }
     state.soundLevel = Math.min(0.18, state.soundLevel + 0.03);
+    state.videoVolume = Math.min(100, state.videoVolume + 8);
+    if (state.videoReady) state.videoPlayer.setVolume(state.videoVolume);
     state.tricks += 1;
-    $("#soundButton").textContent = `♫ Намален на ${Math.round(state.soundLevel * 500)}%`;
+    $("#soundButton").textContent = `♫ Намален на ${state.videoVolume}%`;
     beep(760, 0.1);
     toast("Звукът беше намален нагоре.");
   });
@@ -161,12 +325,40 @@
     document.body.classList.toggle("calm", state.calm);
     $("#panicButton").textContent = state.calm ? "ВЪРНИ ДОСАДАТА" : "АВАРИЕН ИЗХОД";
     if (state.calm) {
+      window.clearTimeout(state.chaosTimer);
+      state.chaosTimer = 0;
+      state.chaosBusy = false;
+      pauseTrollVideo();
+      $("#trollVideo").classList.add("hidden");
       $$(".modal-layer").forEach((modal) => modal.classList.add("hidden"));
+      $("#cookiePanel").classList.add("hidden");
+      $("#chaosBanner").classList.add("hidden");
+      document.body.classList.remove("screen-shake");
+      $$(".chaos-flip, .cursor-clone").forEach((node) => node.classList.contains("cursor-clone") ? node.remove() : node.classList.remove("chaos-flip"));
       $("#surveyNo").style.transform = "none";
       toast("Безопасен режим: движенията и капаните са спрени.");
     } else {
+      if (state.videoActivated) {
+        $("#trollVideo").classList.remove("hidden");
+        playTrollVideo();
+        scheduleChaos();
+      }
       toast("Досадният режим отново е активен. Защо?");
     }
+  });
+
+  $("#fakeVideoClose").addEventListener("click", (event) => {
+    event.stopPropagation();
+    const video = $("#trollVideo");
+    state.tricks += 1;
+    video.classList.add("video-squash");
+    $("#videoStatus").textContent = "Затваряне: отказано от администратора.";
+    toast("Видеото беше затворено неуспешно.");
+    window.setTimeout(() => {
+      teleportVideo();
+      video.classList.remove("video-squash");
+      playTrollVideo();
+    }, 420);
   });
 
   $("#searchButton").addEventListener("click", () => {
@@ -175,15 +367,131 @@
     toast("Търсенето приключи, преди да започне.");
   });
 
-  $$('[data-wrong-nav]').forEach((button) => button.addEventListener("click", () => {
-    const destination = button.dataset.wrongNav;
-    state.tricks += 1;
-    if (destination === "footer") $("#footer").scrollIntoView({ behavior: "smooth" });
-    else if (destination === "forward") setStep(state.step + 1);
-    else if (destination === "news") $("#application").scrollIntoView({ behavior: "smooth" });
-    else if (destination === "contacts") $("#news").scrollIntoView({ behavior: "smooth" });
-    else toast("Разделът е преместен на мястото, на което вече се намирате.");
+  const portalDestinations = ["application", "aboutSection", "newsSection", "servicesSection", "contactsSection", "siteMapSection"];
+  $$('[data-section]').forEach((button) => button.addEventListener("click", () => {
+    state.navClicks += 1;
+    let destination = button.dataset.section;
+    const shouldMisroute = !state.calm && state.navClicks % 3 === 0;
+    if (shouldMisroute) {
+      const alternatives = portalDestinations.filter((id) => id !== destination);
+      destination = alternatives[Math.floor(Math.random() * alternatives.length)];
+      state.tricks += 1;
+      toast("Навигацията Ви насочи към по-подходящ неподходящ раздел.");
+    }
+    if (destination === "home") {
+      window.scrollTo({ top: 0, behavior: state.calm ? "auto" : "smooth" });
+      return;
+    }
+    const target = $(`#${destination}`);
+    if (target) target.scrollIntoView({ behavior: state.calm ? "auto" : "smooth", block: "start" });
   }));
+
+  function scheduleChaos() {
+    window.clearTimeout(state.chaosTimer);
+    if (state.calm || !state.videoActivated) return;
+    const delay = 12000 + Math.floor(Math.random() * 6001);
+    state.chaosTimer = window.setTimeout(() => {
+      if (!state.calm && !state.chaosBusy) runChaosEffect();
+      scheduleChaos();
+    }, delay);
+  }
+
+  function finishChaosAfter(callback, duration) {
+    window.setTimeout(() => {
+      callback();
+      state.chaosBusy = false;
+    }, duration);
+  }
+
+  function runChaosEffect() {
+    if (state.calm || state.chaosBusy) return;
+    state.chaosBusy = true;
+    state.tricks += 1;
+    const effect = state.chaosIndex % 7;
+    state.chaosIndex += 1;
+
+    if (effect === 0) {
+      const errors = [
+        ["Възникна неизвестна известна грешка.", "Страницата отговори, но отговорът не беше съгласен."],
+        ["Операцията приключи успешно неуспешно.", "Натиснете OK, за да отмените отмяната."],
+        ["Недостатъчно чакане.", "Моля, изчакайте още малко, за да започнете да чакате."]
+      ];
+      const error = errors[Math.floor(Math.random() * errors.length)];
+      $("#chaosDialogHeading").textContent = error[0];
+      $("#chaosDialogText").textContent = error[1];
+      openModal("#chaosDialog");
+      finishChaosAfter(() => closeModal("#chaosDialog"), 4800);
+      return;
+    }
+
+    if (effect === 1) {
+      document.body.classList.add("screen-shake");
+      toast("Стабилността на портала се калибрира.");
+      finishChaosAfter(() => document.body.classList.remove("screen-shake"), 550);
+      return;
+    }
+
+    if (effect === 2) {
+      const panels = $$(".portal-panel, .old-box");
+      const panel = panels[Math.floor(Math.random() * panels.length)];
+      panel.classList.add("chaos-flip");
+      toast("Избраният раздел беше огледално заверен.");
+      finishChaosAfter(() => panel.classList.remove("chaos-flip"), 2400);
+      return;
+    }
+
+    if (effect === 3) {
+      const originalTitle = document.title;
+      document.title = "⚠ СЕСИЯТА Е ПОЧТИ ИЗТЕКЛА ⚠";
+      $("#videoStatus").textContent = "Системата променя заглавието без основание...";
+      finishChaosAfter(() => { document.title = originalTitle; }, 4200);
+      return;
+    }
+
+    if (effect === 4) {
+      spawnCursorClones();
+      toast("Курсорът Ви беше размножен за по-бързо обслужване.");
+      finishChaosAfter(() => $$(".cursor-clone").forEach((node) => node.remove()), 2300);
+      return;
+    }
+
+    if (effect === 5) {
+      $("#cookiePanel").classList.remove("hidden");
+      finishChaosAfter(() => $("#cookiePanel").classList.add("hidden"), 6500);
+      return;
+    }
+
+    $("#chaosBanner").classList.remove("hidden");
+    finishChaosAfter(() => $("#chaosBanner").classList.add("hidden"), 3600);
+  }
+
+  function spawnCursorClones() {
+    for (let index = 0; index < 14; index += 1) {
+      const clone = document.createElement("span");
+      clone.className = "cursor-clone";
+      clone.textContent = "➤";
+      clone.style.left = `${state.pointerX}px`;
+      clone.style.top = `${state.pointerY}px`;
+      clone.style.setProperty("--dx", `${Math.round(Math.random() * 180 - 90)}px`);
+      clone.style.setProperty("--dy", `${Math.round(Math.random() * 150 - 75)}px`);
+      document.body.append(clone);
+    }
+  }
+
+  function dismissChaosDialog() {
+    closeModal("#chaosDialog");
+    toast("Грешката беше потвърдена и ще бъде повторена.");
+  }
+  $("#chaosDialogClose").addEventListener("click", dismissChaosDialog);
+  $("#chaosDialogOk").addEventListener("click", dismissChaosDialog);
+  $("#acceptCookies").addEventListener("click", () => {
+    $("#cookiePanel").classList.add("hidden");
+    toast("Приети са и бисквитките, които отказахте.");
+  });
+  $("#rejectCookies").addEventListener("click", () => {
+    $("#cookiePanel").classList.add("hidden");
+    toast("Отказът е приет като съгласие.");
+  });
 
   $("#municipality").addEventListener("change", (event) => {
     if (!state.calm && event.target.value && state.municipalityResets === 0) {
@@ -438,7 +746,11 @@
       <div class="stat"><strong>${state.tricks}</strong><span>административни номера</span></div>
       <div class="stat"><strong>${elapsed}s</strong><span>изгубено време</span></div>
     `;
+    state.calm = true;
+    window.clearTimeout(state.chaosTimer);
+    $("#panicButton").textContent = "ВЪРНИ ДОСАДАТА";
     document.body.classList.add("victory-mode", "calm");
+    pauseTrollVideo();
     openModal("#rewardModal");
   });
 
@@ -474,13 +786,37 @@
     const messages = {
       taxes: "Нямате задължения, но проверката струва едно задължение.",
       queue: "Вашият номер е 000. В момента се обслужва номер -001.",
-      map: "Картата е налична само на хартиена карта на гише 7."
+      map: "Картата е налична само на хартиена карта на гише 7.",
+      winner: "Поздравления! Спечелихте право да попълните още един формуляр.",
+      reader: "PDF Reader 6 изисква PDF Reader 5, който изисква дискета.",
+      toolbar: "Лентата за браузъра беше инсталирана мислено.",
+      birth: "Услугата е временно неродена.",
+      address: "Бъдещият Ви адрес все още не отговаря.",
+      tree: "Първо приложете снимка на липсващото дърво.",
+      stamp: "Заверката се заверява само след презаверяване.",
+      email: "Съобщението не беше изпратено успешно. Благодарим!"
     };
-    toast(messages[button.dataset.popup]);
+    toast(messages[button.dataset.popup] || "Услугата е преместена в несъществуващ раздел.");
   }));
 
   let trailTick = 0;
   document.addEventListener("pointermove", (event) => {
+    state.pointerX = event.clientX;
+    state.pointerY = event.clientY;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (state.videoActivated && !state.calm && !reducedMotion) {
+      const rect = $("#trollVideo").getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const awayX = centerX - event.clientX;
+      const awayY = centerY - event.clientY;
+      const distance = Math.hypot(awayX, awayY);
+      if (distance < 135 && distance > 0) {
+        state.videoVx = (awayX / distance) * 165;
+        state.videoVy = (awayY / distance) * 165;
+        $("#videoStatus").textContent = "Не ме докосвайте, това е служебен екран!";
+      }
+    }
     if (state.calm || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     trailTick += 1;
     if (trailTick % 8 !== 0) return;
@@ -494,5 +830,8 @@
 
   const visitor = 8471 + Math.floor(Math.random() * 29);
   $("#visitorCounter").textContent = String(visitor).padStart(6, "0");
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && state.videoActivated && !state.calm) playTrollVideo();
+  });
   refreshCaptcha();
 })();
