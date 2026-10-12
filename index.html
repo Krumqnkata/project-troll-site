@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Учебна пародия на стар общински портал за електронни услуги.">
+  <title>Община Долно Нанагорнище | Единен портал за е-услуги</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#application">Към заявлението</a>
+  <button id="panicButton" class="panic-button" type="button" title="Спира движенията и номерата">АВАРИЕН ИЗХОД</button>
+
+  <div class="parody-notice">
+    УЧЕБНА ПАРОДИЯ — това не е истинска институция и не изпраща никакви данни
+  </div>
+
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="utility-bar">
+        <span>Понеделник, 12 октомври 2010 г.</span>
+        <div class="utility-actions" aria-label="Настройки на изгледа">
+          <button id="fontSmall" type="button">A</button>
+          <button id="fontLarge" type="button">A+</button>
+          <button id="contrastButton" type="button">◐ Контраст</button>
+          <button id="soundButton" type="button">♫ Аудио помощ</button>
+        </div>
+      </div>
+
+      <div class="brand-row">
+        <div class="coat-of-arms" aria-hidden="true">
+          <span class="crown">♛</span>
+          <span class="shield">ДН</span>
+          <span class="laurel">❧</span>
+        </div>
+        <div class="brand-copy">
+          <p>РЕПУБЛИКА БЪЛГАРИЯ</p>
+          <h1>ОБЩИНА ДОЛНО НАНАГОРНИЩЕ</h1>
+          <span>Официален портал за административно обслужване на населението и други лица</span>
+        </div>
+        <div class="header-tools">
+          <label for="siteSearch">Търсене в портала:</label>
+          <div><input id="siteSearch" type="search" value="търси..." aria-label="Търсене"><button id="searchButton" type="button">ТЪРСИ</button></div>
+          <strong id="digitalClock">00:00:00</strong>
+        </div>
+      </div>
+
+      <div class="ticker" aria-label="Важни съобщения">
+        <strong>ВАЖНО!!!</strong>
+        <div class="ticker-window"><span>Системата работи оптимално с Internet Explorer 8 при резолюция 1024×768. &nbsp; • &nbsp; Поради профилактика порталът може да не работи, докато работи. &nbsp; • &nbsp; НОВО: вече приемаме документи и по електронен път, след лично подаване на гише.</span></div>
+      </div>
+
+      <nav class="main-nav" aria-label="Основна навигация">
+        <button type="button" data-wrong-nav="footer">НАЧАЛО</button>
+        <button type="button" data-wrong-nav="news">НОВИНИ</button>
+        <button type="button" data-wrong-nav="forward">НАЗАД</button>
+        <button type="button" data-wrong-nav="services">Е-УСЛУГИ</button>
+        <button type="button" data-wrong-nav="services">ЕЛЕКТРОННИ УСЛУГИ</button>
+        <button type="button" data-wrong-nav="other">ДРУГИ УСЛУГИ</button>
+        <button type="button" data-wrong-nav="contacts">КОНТАКТИ</button>
+      </nav>
+    </header>
+
+    <div class="content-grid">
+      <aside class="left-sidebar" aria-label="Категории услуги">
+        <section class="old-box">
+          <h2>АДМИНИСТРАТИВНИ УСЛУГИ</h2>
+          <ul class="arrow-list">
+            <li><a href="#application">Гражданско състояние</a></li>
+            <li><a href="#application">Местни данъци и такси</a></li>
+            <li><a href="#application">Устройство на територията</a></li>
+            <li><a href="#application">Удостоверения</a></li>
+            <li><a href="#application">Заверки и презаверки</a></li>
+            <li><a href="#application">Заявления и молби</a></li>
+            <li><a href="#application">Други и неопределими</a></li>
+          </ul>
+        </section>
+
+        <section class="old-box quick-access">
+          <h2>БЪРЗ ДОСТЪП</h2>
+          <button type="button" class="side-tile" data-popup="taxes">▣ ПРОВЕРКА НА ЗАДЪЛЖЕНИЯ</button>
+          <button type="button" class="side-tile" data-popup="queue">⌛ ВИРТУАЛНА ОПАШКА</button>
+          <button type="button" class="side-tile" data-popup="map">⌖ КАРТА НА ГИШЕТАТА</button>
+        </section>
+
+        <section class="compatibility-card">
+          <span class="new-badge">НОВО!</span>
+          <b>Сертифициран портал</b>
+          <p>Best viewed with</p>
+          <strong>Internet Explorer 8</strong>
+          <small>800×600 / 16-bit color</small>
+        </section>
+      </aside>
+
+      <main id="application" class="main-content">
+        <div class="breadcrumbs">Вие сте тук: Начало &gt; Е-услуги &gt; Други &gt; Неясни удостоверения</div>
+
+        <div class="security-warning">
+          <span>⚠</span>
+          <div><strong>Защитена електронна услуга</strong><br>Не въвеждайте реални лични данни. Това е учебна демонстрация и нищо не се изпраща.</div>
+        </div>
+
+        <section class="service-card">
+          <div class="service-titlebar">
+            <span class="title-icon">e</span>
+            <div>
+              <small>Услуга № АО-404/7-Б</small>
+              <h2>Издаване на удостоверение за липса на удостоверение</h2>
+            </div>
+          </div>
+
+          <div class="session-row">
+            <span>Статус: <b class="status-online">● системата почти работи</b></span>
+            <span>Сесията Ви изтича след: <strong id="sessionTimer">00:59</strong></span>
+          </div>
+
+          <ol class="steps" aria-label="Стъпки на заявлението">
+            <li class="active" data-step-indicator="1"><b>1</b><span>Заявител</span></li>
+            <li data-step-indicator="2"><b>2</b><span>Декларации</span></li>
+            <li data-step-indicator="3"><b>3</b><span>Документ</span></li>
+            <li data-step-indicator="4"><b>4</b><span>Проверка</span></li>
+            <li data-step-indicator="5"><b>5</b><span>Приключване</span></li>
+          </ol>
+
+          <form id="municipalForm" novalidate autocomplete="off">
+            <section class="form-step active" data-step="1">
+              <h3><span>1.</span> Данни за заявителя</h3>
+              <p class="required-note">Полетата със знак <b>*</b> са задължителни, освен когато не са.</p>
+
+              <div class="form-table">
+                <label for="municipality">Община по настоящ, постоянен или бъдещ адрес <em>*</em></label>
+                <div>
+                  <select id="municipality" required>
+                    <option value="">-- моля, изберете от 265 възможности --</option>
+                    <option>Долно Нанагорнище</option>
+                    <option>Горно Нанагорнище</option>
+                    <option>Средно Нанадолнище</option>
+                    <option>Столична община — район „Друг“</option>
+                    <option>Не намирам моята община</option>
+                  </select>
+                  <small>Внимание: списъкът се обновява всеки път, когато направите избор.</small>
+                </div>
+
+                <label for="fullName">Три имена / две имена / наименование <em>*</em></label>
+                <div><input id="fullName" type="text" placeholder="Напр. Иван Учебен Примеров" required><small>Използвайте измислени данни.</small></div>
+
+                <label for="identityNumber">ЕГН / ЛНЧ / БУЛСТАТ / друго <em>*</em></label>
+                <div><input id="identityNumber" type="text" value="0000000000" maxlength="13" required><small>Демонстрационна стойност — не въвеждайте истински номер.</small></div>
+
+                <label>Дата на раждане <em>*</em></label>
+                <div class="date-selects">
+                  <select aria-label="Ден"><option>ден</option><option>31</option><option>30</option><option>29</option><option>01</option></select>
+                  <select aria-label="Месец"><option>месец</option><option>декември</option><option>януари</option><option>февруари</option></select>
+                  <select aria-label="Година"><option>година</option><option>2010</option><option>1910</option><option>0000</option></select>
+                </div>
+
+                <label for="serviceType">Вид на исканата услуга <em>*</em></label>
+                <div>
+                  <select id="serviceType">
+                    <option>Обикновена — до 14 работни месеца</option>
+                    <option>Бърза — по-бавна, но с червен печат</option>
+                    <option>Експресна — след предварително записване</option>
+                  </select>
+                </div>
+
+                <label for="contactField">Адрес за електронна кореспонденция</label>
+                <div><input id="contactField" type="text" placeholder="улица, e-mail или факс"><small>Системата ще избере неподходящия канал.</small></div>
+              </div>
+              <div id="step1Message" class="inline-message" role="status"></div>
+              <div class="form-actions swap-zone" id="firstActions">
+                <button id="clearForm" class="secondary-button" type="button">ИЗЧИСТИ ВСИЧКО</button>
+                <button id="step1Next" class="primary-button" type="button">НАПРЕД &gt;&gt;</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="2">
+              <h3><span>2.</span> Декларации, съгласия и съгласие с декларациите</h3>
+              <p>За да продължите, прочетете внимателно и отбележете всяка точка поотделно.</p>
+              <div class="declarations">
+                <label><input class="declaration" type="checkbox"> Декларирам, че декларираните от мен обстоятелства са декларирани.</label>
+                <label><input class="declaration" type="checkbox"> Съгласен/на съм данните ми да не бъдат изпращани никъде в тази демонстрация.</label>
+                <label><input class="declaration" type="checkbox"> Потвърждавам, че съм аз или лице, което прилича на мен.</label>
+                <label><input class="declaration" type="checkbox"> Уведомен/а съм, че „Напред“ понякога означава „Назад“.</label>
+                <label><input class="declaration" type="checkbox"> Желая електронно обслужване, което изисква посещение на гише.</label>
+                <label><input class="declaration" type="checkbox"> Не възразявам полетата да се разместят без административна необходимост.</label>
+                <label class="quiet-declaration"><input id="decl7" class="declaration" type="checkbox"> Декларирам, че забелязах този текст с цвят почти като фона.</label>
+                <label><input class="declaration" type="checkbox"> Прочетох Общите условия, които все още не са написани.</label>
+                <label><input class="declaration" type="checkbox"> Приемам отказа от приемане на неприетото.</label>
+                <label><input class="declaration" type="checkbox"> Потвърждавам, че избраната община е общината, която избрах втория път.</label>
+                <label><input class="declaration" type="checkbox"> Желая входящ номер, който ще ми бъде показан достатъчно кратко.</label>
+                <label><input class="declaration" type="checkbox"> Декларирам, че съм прочел/а декларацията, че съм прочел/а декларациите.</label>
+              </div>
+              <button id="checkAll" class="tiny-button" type="button">Маркирай всички автоматично</button>
+              <div id="step2Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; НАЗАД (към следващото)</button>
+                <button id="step2Next" class="primary-button" type="button">ЗАПАЗИ И ПРОДЪЛЖИ</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="3">
+              <h3><span>3.</span> Прилагане на задължителния незадължителен документ</h3>
+              <div class="upload-requirements">
+                <b>Технически изисквания към файла:</b>
+                <ul>
+                  <li>формат PDF, освен ако системата поиска друг;</li>
+                  <li>точен размер 1.37 MB (нито байт повече);</li>
+                  <li>име само на кирилица, но без буквите „ъ“ и „ь“;</li>
+                  <li>сканиран цветно, черно-бяло и едновременно четливо;</li>
+                  <li>подписан с КЕП, който порталът не може да провери.</li>
+                </ul>
+              </div>
+              <label class="upload-box" for="documentFile">
+                <span class="upload-icon">⇧</span>
+                <strong>Изберете файл от Вашия компютър</strong>
+                <small id="fileName">Няма избран файл. Това вероятно е проблем.</small>
+                <input id="documentFile" type="file" accept="application/pdf,.pdf">
+              </label>
+              <div class="or-divider"><span>ИЛИ, АКО СТЕ СЕ ОТКАЗАЛИ</span></div>
+              <button id="generateDocument" class="official-button" type="button">ГЕНЕРИРАЙ СЛУЖЕБНО НЕПОДХОДЯЩ ФАЙЛ</button>
+              <div id="uploadProgress" class="mini-progress hidden"><span></span><b>0%</b></div>
+              <div id="step3Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; НАЗАД</button>
+                <button id="step3Next" class="primary-button" type="button">ПРОВЕРИ ПРИЛОЖЕНИЕТО</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="4">
+              <h3><span>4.</span> Автоматична човешка проверка</h3>
+              <p>Докажете, че не сте робот, служител или роботизиран служител.</p>
+              <div class="captcha-area">
+                <div id="captchaCode" class="captcha-code" aria-label="CAPTCHA код">7 + 4 = ?</div>
+                <button id="refreshCaptcha" type="button" title="Нов код">↻ Не се вижда</button>
+              </div>
+              <label for="captchaInput">Въведете резултата с думи или цифри:</label>
+              <input id="captchaInput" class="captcha-input" type="text" inputmode="numeric">
+              <div id="step4Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; ВЪРНИ МЕ НАПРЕД</button>
+                <button id="step4Next" class="primary-button" type="button">НЕ СЪМ РОБОТ, ВЕРОЯТНО</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="5">
+              <h3><span>5.</span> Преглед, потвърждение и административно съмнение</h3>
+              <table class="summary-table">
+                <tbody>
+                  <tr><th>Услуга</th><td>Удостоверение за липса на удостоверение</td></tr>
+                  <tr><th>Община</th><td id="summaryMunicipality">—</td></tr>
+                  <tr><th>Заявител</th><td id="summaryName">—</td></tr>
+                  <tr><th>Срок</th><td>До 14 работни месеца, считано от неизвестна дата</td></tr>
+                  <tr><th>Такса</th><td><del>0.00 лв.</del> 0.01 лв. + 14.99 лв. административна обработка</td></tr>
+                  <tr><th>Приложение</th><td id="summaryFile">—</td></tr>
+                </tbody>
+              </table>
+              <label class="final-consent"><input id="finalConsent" type="checkbox"> Потвърждавам, че непотвърдените данни по-горе са достатъчно приблизителни.</label>
+              <div id="step5Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">ОТКАЖИ, НО НЕ СЪВСЕМ</button>
+                <button id="submitApplication" class="submit-button" type="button">ПОДПИШИ И ИЗПРАТИ</button>
+              </div>
+            </section>
+          </form>
+
+          <section id="successPanel" class="success-panel hidden" aria-live="polite">
+            <div class="stamp">ПРИЕТО<br><small>може би</small></div>
+            <h2>Поздравления! Заявлението Ви вероятно е прието.</h2>
+            <p>Вашият входящ номер е:</p>
+            <strong id="incomingNumber" class="incoming-number">ДН-000000/2010</strong>
+            <p id="numberGone" class="hidden">Номерът беше показан. Надяваме се, че сте го запомнили.</p>
+            <button id="restoreNumber" class="tiny-button hidden" type="button">Възстанови номера срещу още едно действие</button>
+            <button id="finishButton" class="primary-button finish-button" type="button">ПРИКЛЮЧИ МЪКАТА</button>
+          </section>
+        </section>
+
+        <div class="legal-footnote">
+          <b>* Правно основание:</b> чл. 404, ал. 0 от Наредбата за нещата, които някога са били необходими. Версия на формуляра 2.0.10 beta.
+        </div>
+      </main>
+
+      <aside class="right-sidebar" aria-label="Информация и помощ">
+        <section class="old-box help-box">
+          <h2>НУЖДАЕТЕ СЕ ОТ ПОМОЩ?</h2>
+          <p>Обадете се на националния телефон за местни въпроси:</p>
+          <strong>0700 00 404</strong>
+          <small>0.99 лв./минута. Операторите почиват.</small>
+          <button id="chatButton" type="button">💬 ЧАТ С НЕАКТИВЕН ОПЕРАТОР</button>
+        </section>
+
+        <section class="old-box news-box" id="news">
+          <h2>СЪОБЩЕНИЯ</h2>
+          <article><time>12.10.2010</time><a href="#news">Порталът е временно постоянен</a></article>
+          <article><time>31.09.2010</time><a href="#news">Ново работно време: 10:00–10:07</a></article>
+          <article><time>Вчера</time><a href="#news">Профилактика на профилактиката</a></article>
+        </section>
+
+        <section class="visitor-box">
+          <span>ВИЕ СТЕ ПОСЕТИТЕЛ №</span>
+          <strong id="visitorCounter">008471</strong>
+          <small>Днес: 000001 &nbsp; Онлайн: 000000</small>
+        </section>
+
+        <section class="survey-box">
+          <h2>Доволни ли сте от портала?</h2>
+          <div class="survey-buttons">
+            <button id="surveyYes" type="button">ДА</button>
+            <button id="surveyNo" type="button">НЕ</button>
+          </div>
+          <p id="surveyResult"></p>
+        </section>
+
+        <section class="weather-widget">
+          <b>ВРЕМЕТО В ОБЩИНАТА</b>
+          <span>☁ 7°C</span>
+          <small>Вероятност за документи: 2%</small>
+        </section>
+      </aside>
+    </div>
+
+    <footer id="footer" class="site-footer">
+      <div>
+        <b>Община Долно Нанагорнище</b><br>
+        пл. „Безкрайна Опашка“ № 1, ет. -1<br>
+        Работно време: всяка втора сряда от 10:00 до 10:07
+      </div>
+      <div class="footer-links"><a href="#application">Карта на сайта без карта</a> | <a href="#footer">Достъпност</a> | <a href="#footer">Декларация за декларацията</a></div>
+      <div class="copyright">© 2007–2010 Община Долно Нанагорнище<br>Всички права запазени, включително грешните.</div>
+    </footer>
+  </div>
+
+  <div id="updateModal" class="modal-layer" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
+    <div class="system-dialog">
+      <div class="dialog-title"><span id="updateTitle">Съобщение от системата</span><button class="fake-close" type="button" aria-label="Затвори">×</button></div>
+      <div class="dialog-body">
+        <div class="dialog-icon">i</div>
+        <div><b>Порталът се нуждае от важно обновяване.</b><p>За да продължите без обновяване, първо натиснете „Обнови по-късно“, след което потвърдете, че не искате да потвърдите.</p></div>
+      </div>
+      <div class="dialog-actions">
+        <button id="updateNow" type="button">Обнови сега</button>
+        <button id="updateLater" type="button">Обнови по-късно</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="progressModal" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="progressTitle">
+    <div class="system-dialog progress-dialog">
+      <div class="dialog-title"><span id="progressTitle">Моля, изчакайте, без да чакате...</span></div>
+      <div class="dialog-body stacked">
+        <p id="progressText">Подписване на неподписаното...</p>
+        <div class="big-progress"><span id="bigProgressBar"></span></div>
+        <b id="bigProgressPercent">0%</b>
+        <small>Моля, не затваряйте този прозорец. Прозорецът ще бъде затворен.</small>
+      </div>
+    </div>
+  </div>
+
+  <div id="sessionModal" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="sessionTitle">
+    <div class="system-dialog error-dialog">
+      <div class="dialog-title"><span id="sessionTitle">Internet Explorer — грешка в успеха</span><button class="fake-close" type="button" aria-label="Затвори">×</button></div>
+      <div class="dialog-body">
+        <div class="dialog-icon error-icon">!</div>
+        <div><b>Вашата сесия изтече поради активност.</b><p>Документът е подписан успешно, но подписът е неуспешен. За да продължите, върнете се назад напред.</p></div>
+      </div>
+      <div class="dialog-actions">
+        <button id="sessionContinue" type="button">Аз все още съм тук</button>
+        <button id="sessionRestart" type="button">Започни от почтиначало</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rewardModal" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="rewardTitle">
+    <div class="reward-card">
+      <span class="reward-spark">✦</span>
+      <p>КРАЙ НА АДМИНИСТРАТИВНАТА ПРОЦЕДУРА</p>
+      <h2 id="rewardTitle">Вие победихте портала.</h2>
+      <div id="statsGrid" class="stats-grid"></div>
+      <button id="closeReward" type="button">Върни нормалния свят</button>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>

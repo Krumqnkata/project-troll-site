@@ -1,0 +1,10 @@
+# Generated deployment files
+/dist/
+/site-bundle.tar.gz
+
+# Local development noise
+/.wrangler/
+.DS_Store
+Thumbs.db
+*.log
+
