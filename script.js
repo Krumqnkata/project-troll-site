@@ -39,6 +39,11 @@
     teacherLastCollision: 0,
     adIndex: 0,
     adTimer: 0,
+    flashAttempts: 0,
+    flashWaits: 0,
+    flashPassed: false,
+    queueAttempts: 0,
+    queuePassed: false,
     chaosTimer: 0,
     chaosBusy: false,
     chaosIndex: 0,
@@ -327,7 +332,7 @@
   }, 1000);
 
   function setStep(nextStep) {
-    state.step = Math.max(1, Math.min(5, nextStep));
+    state.step = Math.max(1, Math.min(7, nextStep));
     $$(".form-step").forEach((panel) => panel.classList.toggle("active", Number(panel.dataset.step) === state.step));
     $$("[data-step-indicator]").forEach((indicator) => {
       const value = Number(indicator.dataset.stepIndicator);
@@ -478,7 +483,7 @@
     if (state.calm || state.chaosBusy) return;
     state.chaosBusy = true;
     state.tricks += 1;
-    const effect = state.chaosIndex % 7;
+    const effect = state.chaosIndex % 9;
     state.chaosIndex += 1;
 
     if (effect === 0) {
@@ -488,6 +493,7 @@
         ["Недостатъчно чакане.", "Моля, изчакайте още малко, за да започнете да чакате."]
       ];
       const error = errors[Math.floor(Math.random() * errors.length)];
+      $("#chaosDialogTitle").textContent = "Microsoft Internet Explorer";
       $("#chaosDialogHeading").textContent = error[0];
       $("#chaosDialogText").textContent = error[1];
       openModal("#chaosDialog");
@@ -532,8 +538,20 @@
       return;
     }
 
-    $("#chaosBanner").classList.remove("hidden");
-    finishChaosAfter(() => $("#chaosBanner").classList.add("hidden"), 3600);
+    if (effect === 6) {
+      $("#chaosBanner").classList.remove("hidden");
+      finishChaosAfter(() => $("#chaosBanner").classList.add("hidden"), 3600);
+      return;
+    }
+
+    const systemFailures = effect === 7
+      ? ["Internet Explorer (Not Responding)", "The program is waiting for the website to respond.", "Уебсайтът чака браузъра, а браузърът чака Вас."]
+      : ["Printer Spooler Service", "Printer not found successfully.", "Добавете несъществуващ принтер и опитайте да отпечатате електронната услуга."];
+    $("#chaosDialogTitle").textContent = systemFailures[0];
+    $("#chaosDialogHeading").textContent = systemFailures[1];
+    $("#chaosDialogText").textContent = systemFailures[2];
+    openModal("#chaosDialog");
+    finishChaosAfter(() => closeModal("#chaosDialog"), 4800);
   }
 
   function spawnCursorClones() {
@@ -722,6 +740,135 @@
     setStep(5);
   });
 
+  function finishFlashCheck() {
+    state.flashPassed = true;
+    state.tricks += 1;
+    closeModal("#flashCrashModal");
+    $("#flashPluginBox").classList.remove("not-responding");
+    $("#flashProgress span").style.width = "100%";
+    $("#flashProgress b").textContent = "100% (не отговаря успешно)";
+    $("#runFlashCheck").disabled = false;
+    $("#runFlashCheck").textContent = "FLASH Е УСПЕШНО НЕРАБОТЕЩ";
+    $("#step5Next").disabled = false;
+    showMessage("#step5Message", "Проверката приключи: Adobe Flash Player не работи точно както се очаква.", "success");
+  }
+
+  $("#runFlashCheck").addEventListener("click", () => {
+    if (state.flashPassed) {
+      toast("Flash вече е сертифицирано повреден.");
+      return;
+    }
+    state.flashAttempts += 1;
+    state.flashWaits = 0;
+    const button = $("#runFlashCheck");
+    const progress = $("#flashProgress");
+    const bar = $("span", progress);
+    const label = $("b", progress);
+    button.disabled = true;
+    button.textContent = "ЗАРЕЖДАНЕ НА НЕЗАРЕДИМОТО...";
+    progress.classList.remove("hidden");
+    bar.style.width = "0%";
+    label.textContent = "0%";
+    let value = 0;
+    const timer = window.setInterval(() => {
+      value += 9;
+      const shown = Math.min(value, 67);
+      bar.style.width = `${shown}%`;
+      label.textContent = `${shown}%`;
+      if (value >= 67) {
+        window.clearInterval(timer);
+        $("#flashPluginBox").classList.add("not-responding");
+        $("#flashCrashTitle").textContent = "Adobe Flash Player (Not Responding)";
+        $("#flashCrashText").textContent = "If you close the program, you might lose information. Ако чакате, също.";
+        $("#waitForFlash").textContent = "Wait for the program to respond";
+        openModal("#flashCrashModal");
+      }
+    }, 90);
+  });
+
+  $("#waitForFlash").addEventListener("click", () => {
+    state.flashWaits += 1;
+    state.tricks += 1;
+    if (state.flashWaits < 2) {
+      $("#flashCrashTitle").textContent = "Adobe Flash Player (Still Not Responding)";
+      $("#flashCrashText").textContent = "Windows is checking whether the program is still not responding. Моля, почакайте още веднъж.";
+      $("#waitForFlash").textContent = "Wait even longer";
+      return;
+    }
+    finishFlashCheck();
+  });
+
+  $("#endFlash").addEventListener("click", () => {
+    state.tricks += 1;
+    closeModal("#flashCrashModal");
+    $("#flashPluginBox").classList.remove("not-responding");
+    $("#flashProgress span").style.width = "0%";
+    $("#flashProgress b").textContent = "0%";
+    $("#runFlashCheck").disabled = false;
+    $("#runFlashCheck").textContent = "СТАРТИРАЙ FLASH ОТНОВО";
+    showMessage("#step5Message", "Затворихте програмата, но проверката остана незавършена. Стартирайте я отново.");
+  });
+
+  $("#flashCrashClose").addEventListener("click", () => {
+    state.tricks += 1;
+    $("#flashCrashClose").textContent = "?";
+    $("#flashCrashText").textContent = "The close button is not responding. Изберете чакане или затваряне.";
+  });
+
+  $("#step5Next").addEventListener("click", () => {
+    if (!state.flashPassed) {
+      showMessage("#step5Message", "Първо трябва да докажете, че Flash не работи.");
+      return;
+    }
+    setStep(6);
+  });
+
+  $("#takeQueueNumber").addEventListener("click", () => {
+    if (state.queuePassed) {
+      toast("Вече имате номер. Вторият номер е на съседното гише.");
+      return;
+    }
+    state.queueAttempts += 1;
+    const firstAttempt = state.queueAttempts === 1;
+    const button = $("#takeQueueNumber");
+    let peopleAhead = firstAttempt ? 5 : 3;
+    $("#personalQueueNumber").textContent = firstAttempt ? "A-8471" : "B-404";
+    $("#currentQueueNumber").textContent = firstAttempt ? "A-000" : "B-401";
+    $("#queueStatus").textContent = `Пред Вас има ${peopleAhead} граждани и един служител.`;
+    button.disabled = true;
+    button.textContent = "МОЛЯ, ЧАКАЙТЕ ПРАВИ";
+    const timer = window.setInterval(() => {
+      peopleAhead -= 1;
+      $("#currentQueueNumber").textContent = firstAttempt ? `A-00${5 - peopleAhead}` : `B-40${4 - peopleAhead}`;
+      $("#queueStatus").textContent = `Пред Вас остават ${Math.max(0, peopleAhead)} граждани и все същият служител.`;
+      if (peopleAhead > 0) return;
+      window.clearInterval(timer);
+      state.tricks += 1;
+      if (firstAttempt) {
+        $("#personalQueueNumber").textContent = "ПРОПУСНАТ";
+        $("#queueStatus").textContent = "Номерът Ви беше извикан без звук преди малко.";
+        button.disabled = false;
+        button.textContent = "ВЗЕМИ ПОВТОРЕН НОМЕР";
+        showMessage("#step6Message", "Опашката Ви пропусна. Изтеглете нов електронен хартиен номер.");
+        return;
+      }
+      state.queuePassed = true;
+      $("#personalQueueNumber").textContent = "B-404 ✓";
+      $("#queueStatus").textContent = "Гише 7 Ви повика, но служителят е в почивка. Това се брои.";
+      button.textContent = "НОМЕРЪТ Е ПРИЕТ";
+      $("#step6Next").disabled = false;
+      showMessage("#step6Message", "Виртуалното чакане приключи физически успешно.", "success");
+    }, 650);
+  });
+
+  $("#step6Next").addEventListener("click", () => {
+    if (!state.queuePassed) {
+      showMessage("#step6Message", "Не можете да продължите, преди да бъдете пропуснати поне веднъж.");
+      return;
+    }
+    setStep(7);
+  });
+
   function runFinalProgress(secondPass = false) {
     state.finalizing = true;
     openModal("#progressModal");
@@ -761,7 +908,7 @@
 
   $("#submitApplication").addEventListener("click", () => {
     if (!$("#finalConsent").checked) {
-      showMessage("#step5Message", "Трябва да потвърдите непотвърдените данни, преди да ги потвърдите.");
+      showMessage("#step7Message", "Трябва да потвърдите непотвърдените данни, преди да ги потвърдите.");
       return;
     }
     if (!state.finalizing) runFinalProgress(state.calm);

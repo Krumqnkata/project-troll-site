@@ -119,7 +119,9 @@
             <li data-step-indicator="2"><b>2</b><span>Декларации</span></li>
             <li data-step-indicator="3"><b>3</b><span>Документ</span></li>
             <li data-step-indicator="4"><b>4</b><span>Проверка</span></li>
-            <li data-step-indicator="5"><b>5</b><span>Приключване</span></li>
+            <li data-step-indicator="5"><b>5</b><span>Flash</span></li>
+            <li data-step-indicator="6"><b>6</b><span>Опашка</span></li>
+            <li data-step-indicator="7"><b>7</b><span>Приключване</span></li>
           </ol>
 
           <form id="municipalForm" novalidate autocomplete="off">
@@ -243,7 +245,49 @@
             </section>
 
             <section class="form-step" data-step="5">
-              <h3><span>5.</span> Преглед, потвърждение и административно съмнение</h3>
+              <h3><span>5.</span> Проверка за съвместимост с Adobe Flash Player</h3>
+              <p>Порталът изисква технология, прекратена преди години. Това е част от модернизацията.</p>
+              <div id="flashPluginBox" class="flash-plugin-box">
+                <div class="flash-logo">f</div>
+                <div>
+                  <strong>Adobe Flash Player 10</strong>
+                  <span>Версия 10.1.53.64 — последно обновена вчера през 2010 г.</span>
+                  <small>Натиснете бутона и не затваряйте програмата, когато спре да отговаря.</small>
+                </div>
+              </div>
+              <button id="runFlashCheck" class="official-button flash-button" type="button">СТАРТИРАЙ FLASH ПРОВЕРКАТА</button>
+              <div id="flashProgress" class="mini-progress hidden"><span></span><b>0%</b></div>
+              <div id="step5Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; НАЗАД КЪМ БЪДЕЩЕТО</button>
+                <button id="step5Next" class="primary-button" type="button" disabled>ПРОДЪЛЖИ БЕЗ FLASH</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="6">
+              <h3><span>6.</span> Виртуална опашка за електронно гише</h3>
+              <p>Онлайн услугата изисква да изчакате реда си, за да не бъде ощетена физическата опашка.</p>
+              <div class="queue-machine">
+                <div class="queue-screen">
+                  <span>ОБСЛУЖВА СЕ</span>
+                  <strong id="currentQueueNumber">A-000</strong>
+                </div>
+                <div class="queue-screen yours">
+                  <span>ВАШИЯТ НОМЕР</span>
+                  <strong id="personalQueueNumber">--- </strong>
+                </div>
+                <p id="queueStatus">Нямате номер. Вече закъснявате.</p>
+                <button id="takeQueueNumber" class="official-button" type="button">ВЗЕМИ ЕЛЕКТРОНЕН ХАРТИЕН НОМЕР</button>
+              </div>
+              <div id="step6Message" class="inline-message" role="status"></div>
+              <div class="form-actions">
+                <button class="secondary-button back-step" type="button">&lt;&lt; ВЪРНИ СЕ НА ОПАШКАТА</button>
+                <button id="step6Next" class="primary-button" type="button" disabled>ОТИДИ НА ГИШЕ 7</button>
+              </div>
+            </section>
+
+            <section class="form-step" data-step="7">
+              <h3><span>7.</span> Преглед, потвърждение и административно съмнение</h3>
               <table class="summary-table">
                 <tbody>
                   <tr><th>Услуга</th><td>Удостоверение за липса на удостоверение</td></tr>
@@ -255,7 +299,7 @@
                 </tbody>
               </table>
               <label class="final-consent"><input id="finalConsent" type="checkbox"> Потвърждавам, че непотвърдените данни по-горе са достатъчно приблизителни.</label>
-              <div id="step5Message" class="inline-message" role="status"></div>
+              <div id="step7Message" class="inline-message" role="status"></div>
               <div class="form-actions">
                 <button class="secondary-button back-step" type="button">ОТКАЖИ, НО НЕ СЪВСЕМ</button>
                 <button id="submitApplication" class="submit-button" type="button">ПОДПИШИ И ИЗПРАТИ</button>
@@ -421,6 +465,20 @@
       <div class="dialog-actions">
         <button id="sessionContinue" type="button">Аз все още съм тук</button>
         <button id="sessionRestart" type="button">Започни от почтиначало</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="flashCrashModal" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="flashCrashTitle">
+    <div class="system-dialog error-dialog not-responding-dialog">
+      <div class="dialog-title"><span id="flashCrashTitle">Adobe Flash Player (Not Responding)</span><button id="flashCrashClose" class="fake-close" type="button" aria-label="Затвори">×</button></div>
+      <div class="dialog-body">
+        <div class="dialog-icon error-icon">!</div>
+        <div><b>Adobe Flash Player is not responding.</b><p id="flashCrashText">If you close the program, you might lose information. Ако чакате, също.</p></div>
+      </div>
+      <div class="dialog-actions">
+        <button id="waitForFlash" type="button">Wait for the program to respond</button>
+        <button id="endFlash" type="button">Close the program</button>
       </div>
     </div>
   </div>
