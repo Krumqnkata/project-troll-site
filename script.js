@@ -37,6 +37,8 @@
     teacherVy: 104,
     teacherLastDirectionChange: 0,
     teacherLastCollision: 0,
+    adIndex: 0,
+    adTimer: 0,
     chaosTimer: 0,
     chaosBusy: false,
     chaosIndex: 0,
@@ -110,7 +112,7 @@
   function createYouTubePlayer() {
     if (state.videoPlayer || !window.YT || !window.YT.Player) return;
     state.videoPlayer = new window.YT.Player("youtubePlayer", {
-      videoId: "Lb3bma3d92k",
+      videoId: "dQw4w9WgXcQ",
       playerVars: {
         autoplay: 1,
         controls: 0,
@@ -118,7 +120,7 @@
         fs: 0,
         loop: 1,
         modestbranding: 1,
-        playlist: "Lb3bma3d92k",
+        playlist: "dQw4w9WgXcQ",
         playsinline: 1,
         rel: 0
       },
@@ -184,6 +186,7 @@
       teacher.style.transform = `translate(${state.teacherX}px, ${state.teacherY}px)`;
       loadYouTubeApi();
       startVideoMotion();
+      startFakeAds();
       scheduleChaos();
       toast("Стартирана е задължителната културна програма.");
     }
@@ -206,7 +209,7 @@
 
     if (!state.calm && state.videoActivated && !reducedMotion) {
       const maxX = Math.max(8, window.innerWidth - video.offsetWidth - 8);
-      const maxY = Math.max(38, window.innerHeight - video.offsetHeight - 8);
+      const maxY = Math.max(38, window.innerHeight - video.offsetHeight - 56);
       state.videoX += state.videoVx * elapsed;
       state.videoY += state.videoVy * elapsed;
 
@@ -239,7 +242,7 @@
   function moveTeacherFrame(now, elapsed, video) {
     const teacher = $("#teacherFace");
     const maxX = Math.max(8, window.innerWidth - teacher.offsetWidth - 8);
-    const maxY = Math.max(38, window.innerHeight - teacher.offsetHeight - 8);
+    const maxY = Math.max(38, window.innerHeight - teacher.offsetHeight - 56);
     state.teacherX += state.teacherVx * elapsed;
     state.teacherY += state.teacherVy * elapsed;
 
@@ -283,7 +286,7 @@
   function teleportVideo() {
     const video = $("#trollVideo");
     const maxX = Math.max(8, window.innerWidth - video.offsetWidth - 8);
-    const maxY = Math.max(38, window.innerHeight - video.offsetHeight - 8);
+    const maxY = Math.max(38, window.innerHeight - video.offsetHeight - 56);
     state.videoX = 8 + Math.random() * Math.max(1, maxX - 8);
     state.videoY = 38 + Math.random() * Math.max(1, maxY - 38);
     video.style.transform = `translate(${state.videoX}px, ${state.videoY}px)`;
@@ -292,10 +295,43 @@
   function teleportTeacher() {
     const teacher = $("#teacherFace");
     const maxX = Math.max(8, window.innerWidth - teacher.offsetWidth - 8);
-    const maxY = Math.max(38, window.innerHeight - teacher.offsetHeight - 8);
+    const maxY = Math.max(38, window.innerHeight - teacher.offsetHeight - 56);
     state.teacherX = 8 + Math.random() * Math.max(1, maxX - 8);
     state.teacherY = 38 + Math.random() * Math.max(1, maxY - 38);
     teacher.style.transform = `translate(${state.teacherX}px, ${state.teacherY}px)`;
+  }
+
+  const fakeAds = [
+    { emoji: "🖨️", headline: "КСЕРОКС ГИШЕ 7", copy: "Копираме документите, преди да ги донесете.", cta: "ПЕЧАТАЙ СЕГА!" },
+    { emoji: "🥐", headline: "БАНИЧКА ПО ЕВРОПРОЕКТ", copy: "70% тесто, 30% устойчиво развитие.", cta: "КАНДИДАТСТВАЙ" },
+    { emoji: "📠", headline: "ИНТЕРНЕТ 2010+", copy: "До 56 килобита в административно време.", cta: "СВЪРЖИ МЕ" },
+    { emoji: "🔴", headline: "ПЕЧАТ & СИН ООД", copy: "Заверяваме незавереното с три мокри печата.", cta: "ЗАВЕРИ" },
+    { emoji: "⌛", headline: "КУРС ПО ЧАКАНЕ", copy: "Диплома след 14 работни месеца.", cta: "ЗАПИШИ СЕ" },
+    { emoji: "⭐", headline: "ГИШЕ 7 PREMIUM", copy: "Пропусни опашката и влез в друга.", cta: "НАДГРАДИ" }
+  ];
+
+  function renderFakeAd() {
+    const ad = fakeAds[state.adIndex % fakeAds.length];
+    $("#adPopupEmoji").textContent = ad.emoji;
+    $("#adPopupHeadline").textContent = ad.headline;
+    $("#adPopupCopy").textContent = ad.copy;
+    $("#fakeAdCta").textContent = ad.cta;
+    $("#adTickerText").textContent = `${ad.headline} — ${ad.copy}`;
+  }
+
+  function rotateFakeAd() {
+    if (state.calm || !state.videoActivated) return;
+    state.adIndex = (state.adIndex + 1) % fakeAds.length;
+    renderFakeAd();
+    state.adTimer = window.setTimeout(rotateFakeAd, 6500);
+  }
+
+  function startFakeAds() {
+    $("#fakeAdPopup").classList.remove("hidden");
+    $("#adTicker").classList.remove("hidden");
+    renderFakeAd();
+    window.clearTimeout(state.adTimer);
+    state.adTimer = window.setTimeout(rotateFakeAd, 6500);
   }
 
   function updateClock() {
@@ -415,6 +451,21 @@
       teacher.classList.remove("teacher-squash");
     }, 420);
   });
+
+  function clickFakeAd(message) {
+    state.tricks += 1;
+    state.adIndex = (state.adIndex + 1) % fakeAds.length;
+    renderFakeAd();
+    toast(message);
+    beep(710, 0.08);
+  }
+
+  $("#fakeAdClose").addEventListener("click", () => {
+    $("#fakeAdPopup").classList.toggle("ad-left");
+    clickFakeAd("Рекламата беше затворена и заменена с по-подходяща.");
+  });
+  $("#fakeAdCta").addEventListener("click", () => clickFakeAd("Офертата изтече преди 14 работни дни."));
+  $("#adTickerButton").addEventListener("click", () => clickFakeAd("Научихте по-малко. Благодарим!"));
 
   $("#searchButton").addEventListener("click", () => {
     const field = $("#siteSearch");
@@ -803,6 +854,7 @@
     `;
     state.calm = true;
     window.clearTimeout(state.chaosTimer);
+    window.clearTimeout(state.adTimer);
     document.body.classList.add("victory-mode", "calm");
     pauseTrollVideo();
     openModal("#rewardModal");

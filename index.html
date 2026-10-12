@@ -457,6 +457,18 @@
 
   <div id="chaosBanner" class="chaos-banner hidden" role="status">⚠ Няма интернет. Тази страница е заредена от интернет.</div>
 
+  <aside id="fakeAdPopup" class="fake-ad-popup hidden" aria-label="Измислена реклама">
+    <div class="fake-ad-titlebar">
+      <span>РЕКЛАМА (ИЗМИСЛЕНА)</span>
+      <button id="fakeAdClose" type="button" aria-label="Затвори рекламата">×</button>
+    </div>
+    <div class="fake-ad-body">
+      <span id="adPopupEmoji" class="fake-ad-emoji">🖨️</span>
+      <div><strong id="adPopupHeadline">КСЕРОКС ГИШЕ 7</strong><p id="adPopupCopy">Копираме документите, преди да ги донесете.</p></div>
+    </div>
+    <button id="fakeAdCta" class="fake-ad-cta" type="button">ПЕЧАТАЙ СЕГА!</button>
+  </aside>
+
   <aside id="trollVideo" class="troll-video hidden" aria-label="Задължително общинско видео">
     <div class="troll-video-titlebar">
       <span>▶ ЗАДЪЛЖИТЕЛНО ОБЩИНСКО ВИДЕО</span>
@@ -478,6 +490,12 @@
     <div class="funded-badge">⚠ ФИНАНСИРАНО СЪС СРЕДСТВА ОТ ОБЩЕСТВЕНИ ПОРЪЧКИ И ЕВРОФОНДОВЕ ⚠</div>
     <div id="teacherStatus" class="teacher-status">Наблюдението на заявлението започна.</div>
   </aside>
+
+  <section id="adTicker" class="ad-ticker hidden" aria-label="Измислен рекламен банер">
+    <strong>РЕКЛАМА</strong>
+    <span id="adTickerText">КСЕРОКС ГИШЕ 7 — Копираме документите, преди да ги донесете.</span>
+    <button id="adTickerButton" type="button">НАУЧИ ПО-МАЛКО</button>
+  </section>
 
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
   <script src="script.js"></script>
