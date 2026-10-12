@@ -343,6 +343,15 @@ a { color: #064f99; }
 .troll-video.video-squash { transform: scale(.08) rotate(18deg) !important; opacity: .35; }
 .troll-video.video-angry .troll-video-titlebar { background: linear-gradient(90deg,#8d0d08,#f18a21); }
 
+.teacher-face { position: fixed; left: 0; top: 0; z-index: 845; width: 216px; border: 3px outset #d9d9d9; background: #ece9d8; box-shadow: 7px 9px 22px #0009; will-change: transform; }
+.teacher-face-titlebar { height: 26px; display: flex; align-items: center; justify-content: space-between; padding-left: 6px; color: #fff; background: linear-gradient(90deg,#384b0b,#91a84d); font-size: 9px; font-weight: bold; }
+.teacher-face-titlebar button { width: 23px; height: 21px; margin-right: 2px; padding: 0; border: 2px outset #eee; color: #fff; background: #d44936; font-weight: bold; line-height: 15px; }
+.teacher-photo-frame { width: 210px; height: 158px; overflow: hidden; background: #21170d; }
+.teacher-photo-frame img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 10%; transform: scale(1.62); transform-origin: 50% 17%; filter: contrast(1.05) saturate(.78); }
+.teacher-status { min-height: 19px; padding: 3px 5px; overflow: hidden; color: #28343d; background: #ece9d8; white-space: nowrap; text-overflow: ellipsis; font-size: 8px; }
+.teacher-face.teacher-squash { transform: scale(.08) rotate(-18deg) !important; opacity: .35; }
+.teacher-face.teacher-angry .teacher-face-titlebar { background: linear-gradient(90deg,#740d08,#e97319); }
+
 .cookie-panel { position: fixed; left: 50%; bottom: 10px; z-index: 875; width: min(620px, calc(100% - 24px)); transform: translateX(-50%); border: 4px ridge #b5b5b5; padding: 10px; color: #231f12; background: #fff7b8; box-shadow: 0 7px 25px #0008; }
 .cookie-title { margin: -10px -10px 8px; padding: 5px 8px; color: #fff; background: linear-gradient(#547ca0,#244c70); font-weight: bold; }
 .cookie-panel p { margin: 4px 0 9px; font-size: 10px; }
@@ -382,7 +391,7 @@ body.calm .page-shell { transform: none !important; }
 body.calm .ticker-window span { padding-left: 10px; transform: none; }
 body.calm #surveyNo { transform: none !important; }
 body.calm .quiet-declaration { color: inherit; }
-body.calm .troll-video, body.calm .cookie-panel, body.calm .chaos-banner, body.calm .chaos-dialog-layer, body.calm .cursor-clone { display: none !important; }
+body.calm .troll-video, body.calm .teacher-face, body.calm .cookie-panel, body.calm .chaos-banner, body.calm .chaos-dialog-layer, body.calm .cursor-clone { display: none !important; }
 
 body.victory-mode { background: linear-gradient(135deg,#e6f5ff,#f9fcff); }
 body.victory-mode .page-shell { filter: grayscale(.25); opacity: .28; pointer-events: none; }
@@ -427,15 +436,19 @@ body.victory-mode .page-shell { filter: grayscale(.25); opacity: .28; pointer-ev
   .troll-video { width: 196px; }
   .youtube-player { width: 190px; height: 107px; }
   .troll-video-titlebar { font-size: 7px; }
+  .teacher-face { width: 166px; }
+  .teacher-photo-frame { width: 160px; height: 121px; }
+  .teacher-face-titlebar { font-size: 7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   .troll-video { left: auto !important; right: 8px !important; top: auto !important; bottom: 54px !important; transform: none !important; }
+  .teacher-face { left: 8px !important; right: auto !important; top: auto !important; bottom: 54px !important; transform: none !important; }
 }
 
 @media print {
-  .utility-bar, .ticker, .main-nav, .left-sidebar, .right-sidebar, .form-actions, .modal-layer, .troll-video, .cookie-panel, .chaos-banner { display: none !important; }
+  .utility-bar, .ticker, .main-nav, .left-sidebar, .right-sidebar, .form-actions, .modal-layer, .troll-video, .teacher-face, .cookie-panel, .chaos-banner { display: none !important; }
   .page-shell, .content-grid { width: 100%; border: 0; box-shadow: none; display: block; }
   .form-step { display: block !important; page-break-inside: avoid; }
 }

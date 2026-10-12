@@ -3,18 +3,22 @@ import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname);
 const outputDirectory = resolve(root, "dist/server");
-const [html, css, javascript] = await Promise.all([
+const [html, css, javascript, teacherFace] = await Promise.all([
   readFile(resolve(root, "index.html"), "utf8"),
   readFile(resolve(root, "style.css"), "utf8"),
-  readFile(resolve(root, "script.js"), "utf8")
+  readFile(resolve(root, "script.js"), "utf8"),
+  readFile(resolve(root, "assets/teacher-face.jpeg"))
 ]);
 
 const worker = `
+const teacherFaceBase64 = ${JSON.stringify(teacherFace.toString("base64"))};
+const teacherFace = Uint8Array.from(atob(teacherFaceBase64), (character) => character.charCodeAt(0));
 const files = {
   "/": { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" },
   "/index.html": { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" },
   "/style.css": { body: ${JSON.stringify(css)}, type: "text/css; charset=utf-8" },
-  "/script.js": { body: ${JSON.stringify(javascript)}, type: "text/javascript; charset=utf-8" }
+  "/script.js": { body: ${JSON.stringify(javascript)}, type: "text/javascript; charset=utf-8" },
+  "/assets/teacher-face.jpeg": { body: teacherFace, type: "image/jpeg" }
 };
 
 export default {

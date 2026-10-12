@@ -31,6 +31,12 @@
     videoLastFrame: 0,
     videoLastDirectionChange: 0,
     videoVolume: 78,
+    teacherX: 340,
+    teacherY: 82,
+    teacherVx: -126,
+    teacherVy: 104,
+    teacherLastDirectionChange: 0,
+    teacherLastCollision: 0,
     chaosTimer: 0,
     chaosBusy: false,
     chaosIndex: 0,
@@ -164,11 +170,18 @@
   function activateTrollVideo() {
     if (state.calm) return;
     const video = $("#trollVideo");
+    const teacher = $("#teacherFace");
     video.classList.remove("hidden");
+    teacher.classList.remove("hidden");
     if (!state.videoActivated) {
       state.videoActivated = true;
       video.style.left = "0";
       video.style.top = "0";
+      teacher.style.left = "0";
+      teacher.style.top = "0";
+      state.teacherX = Math.max(8, window.innerWidth - teacher.offsetWidth - 28);
+      state.teacherY = Math.max(38, window.innerHeight - teacher.offsetHeight - 28);
+      teacher.style.transform = `translate(${state.teacherX}px, ${state.teacherY}px)`;
       loadYouTubeApi();
       startVideoMotion();
       scheduleChaos();
@@ -181,6 +194,7 @@
     if (state.videoFrame) return;
     state.videoLastFrame = performance.now();
     state.videoLastDirectionChange = state.videoLastFrame;
+    state.teacherLastDirectionChange = state.videoLastFrame;
     state.videoFrame = requestAnimationFrame(moveVideoFrame);
   }
 
@@ -216,8 +230,54 @@
         $("#videoStatus").textContent = Math.random() > 0.5 ? "Търсим най-неудобния ъгъл..." : "Не затваряйте. Ние също не можем.";
       }
       video.style.transform = `translate(${state.videoX}px, ${state.videoY}px)`;
+
+      moveTeacherFrame(now, elapsed, video);
     }
     state.videoFrame = requestAnimationFrame(moveVideoFrame);
+  }
+
+  function moveTeacherFrame(now, elapsed, video) {
+    const teacher = $("#teacherFace");
+    const maxX = Math.max(8, window.innerWidth - teacher.offsetWidth - 8);
+    const maxY = Math.max(38, window.innerHeight - teacher.offsetHeight - 8);
+    state.teacherX += state.teacherVx * elapsed;
+    state.teacherY += state.teacherVy * elapsed;
+
+    if (state.teacherX <= 8 || state.teacherX >= maxX) {
+      state.teacherX = Math.max(8, Math.min(maxX, state.teacherX));
+      state.teacherVx *= -1;
+      teacher.classList.toggle("teacher-angry");
+    }
+    if (state.teacherY <= 38 || state.teacherY >= maxY) {
+      state.teacherY = Math.max(38, Math.min(maxY, state.teacherY));
+      state.teacherVy *= -1;
+      teacher.classList.toggle("teacher-angry");
+    }
+
+    if (now - state.teacherLastDirectionChange > 5800) {
+      const speed = 105 + Math.random() * 78;
+      const angle = Math.random() * Math.PI * 2;
+      state.teacherVx = Math.cos(angle) * speed;
+      state.teacherVy = Math.sin(angle) * speed;
+      state.teacherLastDirectionChange = now;
+      $("#teacherStatus").textContent = Math.random() > 0.5 ? "Следи дали преписвате от общината..." : "Погледът е служебен и не се изключва.";
+    }
+
+    const overlapsVideo =
+      state.teacherX < state.videoX + video.offsetWidth &&
+      state.teacherX + teacher.offsetWidth > state.videoX &&
+      state.teacherY < state.videoY + video.offsetHeight &&
+      state.teacherY + teacher.offsetHeight > state.videoY;
+    if (overlapsVideo && now - state.teacherLastCollision > 500) {
+      state.teacherVx *= -1;
+      state.teacherVy *= -1;
+      state.videoVx *= -1;
+      state.videoVy *= -1;
+      state.teacherLastCollision = now;
+      $("#teacherStatus").textContent = "Сблъсък със задължителната култура.";
+    }
+
+    teacher.style.transform = `translate(${state.teacherX}px, ${state.teacherY}px)`;
   }
 
   function teleportVideo() {
@@ -227,6 +287,15 @@
     state.videoX = 8 + Math.random() * Math.max(1, maxX - 8);
     state.videoY = 38 + Math.random() * Math.max(1, maxY - 38);
     video.style.transform = `translate(${state.videoX}px, ${state.videoY}px)`;
+  }
+
+  function teleportTeacher() {
+    const teacher = $("#teacherFace");
+    const maxX = Math.max(8, window.innerWidth - teacher.offsetWidth - 8);
+    const maxY = Math.max(38, window.innerHeight - teacher.offsetHeight - 8);
+    state.teacherX = 8 + Math.random() * Math.max(1, maxX - 8);
+    state.teacherY = 38 + Math.random() * Math.max(1, maxY - 38);
+    teacher.style.transform = `translate(${state.teacherX}px, ${state.teacherY}px)`;
   }
 
   function updateClock() {
@@ -331,6 +400,19 @@
       teleportVideo();
       video.classList.remove("video-squash");
       playTrollVideo();
+    }, 420);
+  });
+
+  $("#fakeTeacherClose").addEventListener("click", (event) => {
+    event.stopPropagation();
+    const teacher = $("#teacherFace");
+    state.tricks += 1;
+    teacher.classList.add("teacher-squash");
+    $("#teacherStatus").textContent = "Отсъствието не е разрешено.";
+    toast("Учителят беше затворен неуспешно.");
+    window.setTimeout(() => {
+      teleportTeacher();
+      teacher.classList.remove("teacher-squash");
     }, 420);
   });
 
@@ -787,6 +869,18 @@
         state.videoVx = (awayX / distance) * 165;
         state.videoVy = (awayY / distance) * 165;
         $("#videoStatus").textContent = "Не ме докосвайте, това е служебен екран!";
+      }
+
+      const teacherRect = $("#teacherFace").getBoundingClientRect();
+      const teacherCenterX = teacherRect.left + teacherRect.width / 2;
+      const teacherCenterY = teacherRect.top + teacherRect.height / 2;
+      const teacherAwayX = teacherCenterX - event.clientX;
+      const teacherAwayY = teacherCenterY - event.clientY;
+      const teacherDistance = Math.hypot(teacherAwayX, teacherAwayY);
+      if (teacherDistance < 125 && teacherDistance > 0) {
+        state.teacherVx = (teacherAwayX / teacherDistance) * 178;
+        state.teacherVy = (teacherAwayY / teacherDistance) * 178;
+        $("#teacherStatus").textContent = "Не пипайте дежурния учител!";
       }
     }
     if (state.calm || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
