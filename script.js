@@ -320,33 +320,6 @@
     toast("Звукът беше намален нагоре.");
   });
 
-  $("#panicButton").addEventListener("click", () => {
-    state.calm = !state.calm;
-    document.body.classList.toggle("calm", state.calm);
-    $("#panicButton").textContent = state.calm ? "ВЪРНИ ДОСАДАТА" : "АВАРИЕН ИЗХОД";
-    if (state.calm) {
-      window.clearTimeout(state.chaosTimer);
-      state.chaosTimer = 0;
-      state.chaosBusy = false;
-      pauseTrollVideo();
-      $("#trollVideo").classList.add("hidden");
-      $$(".modal-layer").forEach((modal) => modal.classList.add("hidden"));
-      $("#cookiePanel").classList.add("hidden");
-      $("#chaosBanner").classList.add("hidden");
-      document.body.classList.remove("screen-shake");
-      $$(".chaos-flip, .cursor-clone").forEach((node) => node.classList.contains("cursor-clone") ? node.remove() : node.classList.remove("chaos-flip"));
-      $("#surveyNo").style.transform = "none";
-      toast("Безопасен режим: движенията и капаните са спрени.");
-    } else {
-      if (state.videoActivated) {
-        $("#trollVideo").classList.remove("hidden");
-        playTrollVideo();
-        scheduleChaos();
-      }
-      toast("Досадният режим отново е активен. Защо?");
-    }
-  });
-
   $("#fakeVideoClose").addEventListener("click", (event) => {
     event.stopPropagation();
     const video = $("#trollVideo");
@@ -748,7 +721,6 @@
     `;
     state.calm = true;
     window.clearTimeout(state.chaosTimer);
-    $("#panicButton").textContent = "ВЪРНИ ДОСАДАТА";
     document.body.classList.add("victory-mode", "calm");
     pauseTrollVideo();
     openModal("#rewardModal");

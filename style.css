@@ -40,29 +40,6 @@ a { color: #064f99; }
 }
 .skip-link:focus { top: 12px; }
 
-.parody-notice {
-  padding: 5px 12px;
-  color: #fff;
-  background: #8d180f;
-  border-bottom: 1px solid #ffdd86;
-  text-align: center;
-  font-weight: bold;
-  letter-spacing: .35px;
-}
-
-.panic-button {
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
-  z-index: 1000;
-  border: 3px outset #f5e7b2;
-  padding: 9px 12px;
-  color: #1e1e1e;
-  background: linear-gradient(#fff67b, #f2a91e);
-  box-shadow: 0 2px 10px #0008;
-  font-weight: 900;
-}
-
 .page-shell {
   width: min(1180px, calc(100% - 20px));
   margin: 0 auto 24px;
@@ -447,7 +424,6 @@ body.victory-mode .page-shell { filter: grayscale(.25); opacity: .28; pointer-ev
   .stats-grid { grid-template-columns: 1fr; }
   .reward-card { padding: 22px 14px; }
   .reward-card h2 { font-size: 25px; }
-  .panic-button { right: 6px; bottom: 6px; font-size: 10px; }
   .troll-video { width: 196px; }
   .youtube-player { width: 190px; height: 107px; }
   .troll-video-titlebar { font-size: 7px; }
@@ -459,7 +435,7 @@ body.victory-mode .page-shell { filter: grayscale(.25); opacity: .28; pointer-ev
 }
 
 @media print {
-  .panic-button, .parody-notice, .utility-bar, .ticker, .main-nav, .left-sidebar, .right-sidebar, .form-actions, .modal-layer, .troll-video, .cookie-panel, .chaos-banner { display: none !important; }
+  .utility-bar, .ticker, .main-nav, .left-sidebar, .right-sidebar, .form-actions, .modal-layer, .troll-video, .cookie-panel, .chaos-banner { display: none !important; }
   .page-shell, .content-grid { width: 100%; border: 0; box-shadow: none; display: block; }
   .form-step { display: block !important; page-break-inside: avoid; }
 }
